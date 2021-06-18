@@ -7,6 +7,8 @@ from .node import BaseNode
 
 __all__: list = [
     'ObsidianException',
+    'ObsidianSearchFailure',
+    'NoSearchMatchesFound',
     'HTTPError',
     'NodeNotConnected',
     'NodeAlreadyExists',
