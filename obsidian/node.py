@@ -8,10 +8,13 @@ import asyncio
 from discord.ext import commands
 
 from .stats import Stats
-from .enums import OpCode
 from .pool import NodePool
 from .player import Player
+from .http import HTTPClient
 from .websocket import Websocket
+from .enums import OpCode, Source
+from .search import TrackSearcher
+from .track import Track, Playlist
 from .errors import NodeNotConnected
 
 
@@ -21,7 +24,7 @@ __all__ = [
     'Node'
 ]
 
-__log__: logging.Logger = logging.getLogger('obsidian.player')
+__log__: logging.Logger = logging.getLogger('obsidian.node')
 
 
 class BaseNode(object):
@@ -42,12 +45,17 @@ class BaseNode(object):
         self._identifier: str = identifier or 'MAIN'
         self._region: typing.Optional[discord.VoiceRegion] = region
         self._players: typing.Dict[int, Player] = {}
+        self._search: TrackSearcher = TrackSearcher(self)
 
         self.__stats: typing.Optional[Stats] = None
         self.__session: aiohttp.ClientSession = kwargs.get('session') or aiohttp.ClientSession()
         self.__loop: asyncio.AbstractEventLoop = kwargs.get('loop') or bot.loop
         self.__task: typing.Optional[asyncio.Task] = None
         self.__ws: typing.Optional[Websocket] = None
+
+        self.__http: HTTPClient = HTTPClient(
+            self.__session, self._host, self._port, self._password
+        )
 
     @property
     def bot(self) -> Bot:
@@ -88,6 +96,10 @@ class BaseNode(object):
     @property
     def ws(self) -> Websocket:
         return self.__ws
+
+    @property
+    def http(self) -> HTTPClient:
+        return self.__http
 
     @property
     def stats(self) -> Stats:
@@ -178,6 +190,37 @@ class BaseNode(object):
             return
 
         self.loop.create_task(player.destroy())
+
+    @typing.overload
+    async def search_track(
+            self,
+            query: str,
+            *,
+            source: typing.Optional[Source] = None,
+            cls: type = Track,
+            suppress: bool = False,
+            limit: typing.Optional[int] = None,
+            **kwargs
+    ) -> typing.Optional[typing.Union[Track, Playlist]]:
+        ...
+
+    async def search_track(self, *args, **kwargs):
+        return await self._search.search_track(*args, **kwargs)
+
+    @typing.overload
+    async def search_tracks(
+            self,
+            query: str,
+            *,
+            source: typing.Optional[Source] = None,
+            cls: type = Track,
+            suppress: bool = True,
+            **kwargs
+    ) -> typing.Optional[typing.Union[typing.List[Track], Playlist]]:
+        ...
+
+    async def search_tracks(self, *args, **kwargs):
+        return await self._search.search_tracks(*args, **kwargs)
 
 
 class Node(BaseNode):

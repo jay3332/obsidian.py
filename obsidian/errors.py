@@ -1,12 +1,50 @@
 from __future__ import annotations
 
+from aiohttp import ClientResponse
+
 from .node import BaseNode
+
+
+__all__: list = [
+    'ObsidianException',
+    'HTTPError',
+    'NodeNotConnected',
+    'NodeAlreadyExists',
+    'NodeCreationError',
+    'ObsidianConnectionFailure',
+    'ObsidianAuthorizationFailure'
+]
 
 
 class ObsidianException(Exception):
     """
     Raised when an error related to this module occurs.
     """
+
+
+class ObsidianSearchFailure(ObsidianException):
+    """
+    Raised when searching for a track fails.
+    """
+
+
+class NoSearchMatchesFound(ObsidianSearchFailure):
+    """
+    Raised when no matches are found via search query.
+    """
+
+    def __init__(self, query: str) -> None:
+        super().__init__(f'No song matches for query {query!r}.')
+
+
+class HTTPError(ObsidianException):
+    """
+    Raised when an error via HTTP request occurs.
+    """
+
+    def __init__(self, message: str, response: ClientResponse) -> None:
+        super().__init__(message)
+        self.response: ClientResponse = response
 
 
 class NodeNotConnected(ObsidianException):

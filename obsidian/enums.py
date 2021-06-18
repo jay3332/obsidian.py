@@ -1,3 +1,5 @@
+# credit: https://github.com/Axelancerr/Slate/tree/main/slate/objects/enums.py#L62
+
 from enum import Enum
 
 
@@ -30,12 +32,28 @@ class OpCode(Enum):
 class Source(Enum):
     YOUTUBE = 'youtube'
     YOUTUBE_MUSIC = 'youtube_music'
+    SOUNDCLOUD = 'soundcloud'
+    SPOTIFY = 'spotify'
+
     YARN = 'yarn'
     BANDCAMP = 'bandcamp'
     TWITCH = 'twitch'
     VIMEO = 'vimeo'
     NICO = 'nico'
-    SOUNDCLOUD = 'soundcloud'
     LOCAL = 'local'
     HTTP = 'http'
-    SPOTIFY = 'spotify'
+
+
+class LoadType(Enum):
+    NO_MATCHES = 'NO_MATCHES'
+    LOAD_FAILED = 'LOAD_FAILED'
+    PLAYLIST_LOADED = 'PLAYLIST_LOADED'
+    TRACK_LOADED = 'TRACK_LOADED'
+    SEARCH_RESULT = 'SEARCH_RESULT'
+
+
+class SearchType(Enum):
+    TRACK = 'track'
+    PLAYLIST = 'playlist'
+    ALBUM = 'album'
+    ARTIST = 'artist'

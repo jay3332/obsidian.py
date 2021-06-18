@@ -63,7 +63,7 @@ class Protocol(discord.VoiceProtocol, ABC):
             reconnect: typing.Optional[bool] = None,
             self_deaf: bool = False
     ) -> None:
-        await self.guild.change_voice_state(channel=self.channel)
+        await self.guild.change_voice_state(channel=self.channel, self_deaf=self_deaf)
         __log__.info(f'PLAYER | {self.guild.id} connected to voice channel {self.channel.id}')
 
     async def disconnect(self, *, force: bool = False) -> None:
