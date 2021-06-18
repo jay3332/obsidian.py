@@ -25,8 +25,8 @@ class _NodePool:
     async def initiate_node(
             self,
             bot: Bot,
-            host: str,
-            port: typing.Union[str, int],
+            host: str = '127.0.0.1',
+            port: typing.Union[str, int] = '3030',
             password: typing.Optional[str] = None,
             identifier: typing.Optional[str] = None,
             region: typing.Optional[discord.VoiceRegion] = None,
