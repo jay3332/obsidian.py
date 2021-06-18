@@ -44,7 +44,7 @@ class Bot(commands.Bot):
         self.obsidian = await obsidian.initiate_node(bot=self)
 
 
-bot = Bot('$')
+bot = Bot(command_prefix='$')
 
 @bot.command()
 async def connect(ctx):
