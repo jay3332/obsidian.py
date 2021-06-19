@@ -8,6 +8,7 @@ import logging
 from abc import ABC
 from discord.ext import commands
 
+from .filters import FilterSink, VolumeFilter, BaseFilter
 from .enums import OpCode
 from .track import Track
 
@@ -127,8 +128,8 @@ class Player:
         self._paused: bool = False
 
         self.__protocol: Protocol = None
+        self.__sink: FilterSink = FilterSink(self)
 
-        # self._filter: typing.Optional[ObsidianFilter] = None
         self._current: typing.Optional[Track] = None
 
         if not isinstance(self._guild, discord.Guild):
@@ -179,6 +180,21 @@ class Player:
     @property
     def voice_client(self) -> Protocol:
         return self.__protocol
+
+    @property
+    def filters(self) -> FilterSink:
+        return self.__sink
+
+    @filters.setter
+    def filters(self, sink: FilterSink) -> None:
+        if not isinstance(sink, FilterSink):
+            raise TypeError('Filter sinks must inherit from FitlerSink.')
+
+        self.__sink = sink
+
+    @property
+    def volume(self) -> int:
+        return self.__sink.volume.percent if self.__sink.volume else 100
 
     @property
     def listeners(self) -> typing.List[discord.Member]:
@@ -344,11 +360,41 @@ class Player:
         self._position = position
         self._last_update = time.time() * 1000
 
-    async def pause(self) -> None:
-        await self.set_pause(True)
+    async def set_volume(self, volume: int = 100) -> None:
+        if self.__sink.volume:
+            self.__sink.volume.percent = volume
 
-    async def resume(self) -> None:
-        await self.set_pause(False)
+        self.__sink.add(VolumeFilter(volume / 100))
+        await self.update_filters()
 
-    async def seek(self, position: float) -> None:
-        await self.set_position(position)
+    async def update_filters(self) -> None:
+        await self._node.send(OpCode.PLAYER_FILTERS, self.__sink.to_json(self.guild_id))
+        __log__.info(f'PLAYER | {self.guild.id} updated filters')
+
+    async def set_filters(self, filters: FilterSink) -> None:
+        self.filters = filters
+        await self.update_filters()
+
+    async def add_filter(self, *filters: BaseFilter) -> None:
+        for filter_ in filters:
+            self.__sink.add(filter_)
+
+        await self.update_filters()
+
+    async def remove_filter(self, *filters) -> None:
+        for filter_ in filters:
+            self.__sink.remove(filter_)
+
+        await self.update_filters()
+
+    async def reset_filters(self) -> None:
+        self.__sink.reset()
+        await self.update_filters()
+
+    seek = set_position
+    set_filter = set_filters
+    overwrite_filters = set_filters
+    add_filters = add_filter
+    remove_filters = remove_filter
+    reset_filter = reset_filters
+    set_vol = set_volume

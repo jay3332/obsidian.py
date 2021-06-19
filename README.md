@@ -22,9 +22,11 @@ This wrapper is based off of [Slate](https://github.com/Axelancerr/Slate).
 - [obsidian.yml](https://github.com/mixtape-bot/obsidian/blob/v2/obsidian.yml/)
 
 ## Features
+- Fully asynchronous
 - Object oriented
-- Spotify search 
 - Playlist support
+- Filter support
+- Querying tracks from many sources 
 
 ## Examples 
 ### Basic
