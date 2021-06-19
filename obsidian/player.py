@@ -24,8 +24,15 @@ __log__: logging.Logger = logging.getLogger('obsidian.player')
 
 class Protocol(discord.VoiceProtocol, ABC):
     def __init__(self, player: Player) -> None:
-        self._player = player
         super().__init__(player.bot, player.channel)
+
+        self.client = player.bot
+        self.channel = player.channel
+
+        self._player = player
+
+    def __inject(self) -> None:
+        self.client._connection._add_voice_client(self.guild.id, self)
 
     @property
     def player(self) -> Player:
@@ -63,6 +70,7 @@ class Protocol(discord.VoiceProtocol, ABC):
             reconnect: typing.Optional[bool] = None,
             self_deaf: bool = False
     ) -> None:
+        self.__inject()
         await self.guild.change_voice_state(channel=self.channel, self_deaf=self_deaf)
         __log__.info(f'PLAYER | {self.guild.id} connected to voice channel {self.channel.id}')
 
@@ -257,10 +265,11 @@ class Player:
             raise TypeError('Connection class must inherit from Protocol')
 
         self._channel = channel
-        self.__protocol = protocol = cls(self)
-        await protocol.connect(timeout=timeout, reconnect=reconnect, self_deaf=self_deaf)
+        if not self.__protocol:
+            self.__protocol = cls(self)
 
-        return protocol
+        await self.__protocol.connect(timeout=timeout, reconnect=reconnect, self_deaf=self_deaf)
+        return self.__protocol
 
     async def disconnect(self, *, force: bool = False) -> None:
         if not self.__protocol or not self.connected:

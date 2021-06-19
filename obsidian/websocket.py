@@ -57,7 +57,7 @@ class Websocket:
         return self.__ws is not None and not self.__ws.closed
 
     @property
-    def ws(self) -> aiohttp.ClientWebSocketResponse:
+    def _ws(self) -> aiohttp.ClientWebSocketResponse:
         return self.__ws
 
     async def connect(self) -> aiohttp.ClientWebSocketResponse:
