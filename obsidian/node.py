@@ -59,6 +59,9 @@ class BaseNode(object):
 
         self.__internal__ = kwargs
 
+    def __repr__(self) -> str:
+        return f'<Node identifier={self._identifier!r}>'
+
     @property
     def bot(self) -> Bot:
         return self._bot

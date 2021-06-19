@@ -137,6 +137,9 @@ class Player:
             if new:
                 self._guild = new
 
+    def __repr__(self) -> str:
+        return f'<Player node={self._node.identifier!r} connected={self.connected}>'
+
     @property
     def bot(self) -> Bot:
         return self._bot

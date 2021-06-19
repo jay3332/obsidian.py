@@ -39,6 +39,9 @@ class Websocket:
 
         self.__internal__ = connect_kwargs
 
+    def __repr__(self) -> str:
+        return f'<Websocket node={self.__node.identifier!r}>'
+
     @property
     def url(self) -> str:
         ws = 'wss' if self.__secure else 'ws'

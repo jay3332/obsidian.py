@@ -35,6 +35,9 @@ class FilterSink(object):
         self.__player: Player = player
         self.__filters: Dict[str, BaseFilter] = {}
 
+    def __repr__(self) -> str:
+        return '<FilterSink>'
+
     @property
     def player(self):
         return self.__player
@@ -121,6 +124,9 @@ class BaseFilter(object):
     def to_raw(self) -> Any:
         raise NotImplementedError
 
+    def __repr__(self) -> str:
+        return '<BaseFilter>'
+
 
 class VolumeFilter(BaseFilter):
     def __init__(self, volume: float = 1.0) -> None:
@@ -159,6 +165,9 @@ class VolumeFilter(BaseFilter):
 
     def to_raw(self) -> float:
         return self.volume
+
+    def __repr__(self) -> str:
+        return f'<VolumeFilter volume={self.volume}>'
 
 
 class TimescaleFilter(BaseFilter):
@@ -288,3 +297,21 @@ class TimescaleFilter(BaseFilter):
             final['pitch_semi_tones'] = self.pitch_semitones
 
         return final
+
+    def __repr__(self) -> str:
+        entities = ''
+
+        for key in [
+            'pitch',
+            'pitch_octaves',
+            'pitch_semitones',
+            'rate',
+            'rate_change',
+            'speed',
+            'speed_change'
+        ]:
+            value = getattr(self, key, None)
+            if value is not None:
+                entities += f' {key}={value!r}'
+
+        return f'<TimescaleFilter{entities}>'

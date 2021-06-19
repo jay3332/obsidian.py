@@ -18,6 +18,9 @@ class _NodePool:
     def __init__(self):
         self._nodes: typing.Dict[str, BaseNode] = {}
 
+    def __repr__(self) -> str:
+        return f'NodePool [ {", ".join(map(repr, self._nodes))} ]'
+
     @property
     def nodes(self) -> typing.Dict[str, BaseNode]:
         return self._nodes

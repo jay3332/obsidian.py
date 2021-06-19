@@ -40,6 +40,9 @@ class TrackSearcher:
         self._node: BaseNode = node
         self._regex: Pattern = url_match_regex or DEFAULT_MATCH_REGEX
 
+    def __repr__(self) -> str:
+        return f'<TrackSearcher node={self._node.identifier!r}>'
+
     @property
     def node(self):
         return self._node
