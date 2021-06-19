@@ -75,17 +75,17 @@ class HTTPClient:
         __log__.error(message)
         raise HTTPError(message, response)
 
-    def load_tracks(self, identifier: str) -> Coroutine[Dict[str, Any]]:
+    def load_tracks(self, identifier: str) -> Coroutine[Any, Any, Dict[str, Any]]:
         return self.request('GET', '/loadtracks', parameters={
             'identifier': identifier
         })
 
-    def decode_track(self, track: str) -> Coroutine[Dict[str, Any]]:
+    def decode_track(self, track: str) -> Coroutine[Any, Any, Dict[str, Any]]:
         return self.request('GET', '/decodetrack', parameters={
             'track': track
         })
 
-    def decode_tracks(self, tracks: List[str]) -> Coroutine[Dict[str, Any]]:
+    def decode_tracks(self, tracks: List[str]) -> Coroutine[Any, Any, Dict[str, Any]]:
         return self.request('POST', '/decodetracks', parameters={
             'tracks': tracks
         })

@@ -120,7 +120,7 @@ class Player:
 
         self.__protocol: Protocol = None
 
-        self._filter: typing.Optional[ObsidianFilter] = None
+        # self._filter: typing.Optional[ObsidianFilter] = None
         self._current: typing.Optional[Track] = None
 
         if not isinstance(self._guild, discord.Guild):
@@ -223,6 +223,8 @@ class Player:
         self._paused = current_track.get('paused', False)
 
     def dispatch_event(self, data: typing.Dict[str, typing.Any]) -> None:
+        return  # Not implemented
+
         name = "".join(word.title() for word in data.get("type").split("_"))
         event = getattr(events, name, None)
 
@@ -302,7 +304,7 @@ class Player:
             payload['no_replace'] = no_replace
 
         await self._node.send(OpCode.PLAY_TRACK, payload)
-        __log__.info(f'PLAYER | {self._guild.id} is now playing {track!r}')
+        __log__.info(f'PLAYER | {self.guild_id} is now playing {track!r}')
 
         self._current = track
 

@@ -21,7 +21,10 @@ class Websocket:
             self,
             node,
             session: aiohttp.ClientSession,
-            loop: asyncio.AbstractEventLoop
+            loop: asyncio.AbstractEventLoop,
+            *,
+            secure: bool = False,
+            **connect_kwargs
     ) -> None:
         from .node import BaseNode
 
@@ -31,11 +34,15 @@ class Websocket:
         self._loop: asyncio.AbstractEventLoop = loop
 
         self.__node: BaseNode = node
+        self.__secure: bool = secure
         self.__ws: typing.Optional[aiohttp.ClientWebSocketResponse] = None
+
+        self.__internal__ = connect_kwargs
 
     @property
     def url(self) -> str:
-        return f'ws://{self.__node.host}:{self.__node.port}/magma'
+        ws = 'wss' if self.__secure else 'ws'
+        return f'{ws}://{self.__node.host}:{self.__node.port}/magma'
 
     @property
     def headers(self) -> typing.Dict[str, any]:
@@ -49,11 +56,15 @@ class Websocket:
     def connected(self) -> bool:
         return self.__ws is not None and not self.__ws.closed
 
+    @property
+    def ws(self) -> aiohttp.ClientWebSocketResponse:
+        return self.__ws
+
     async def connect(self) -> aiohttp.ClientWebSocketResponse:
         identifier = self.__node.identifier
 
         try:
-            ws = await self._session.ws_connect(self.url, headers=self.headers)
+            ws = await self._session.ws_connect(self.url, headers=self.headers, **self.__internal__)
         except aiohttp.WSServerHandshakeError as exc:
             if exc.status == 4001:
                 __log__.error(f'NODE {identifier!r} | Failed to authorize')
@@ -101,5 +112,5 @@ class Websocket:
                     __log__.debug(f'NODE {self.__node.identifier!r} | Received payload with op-code {op!r}: {data}')
                     self._loop.create_task(self.__node.handle_ws_response(op, data['d']))
 
-    def send_str(self, data: str, compress: typing.Optional[int] = None) -> typing.Coroutine[None]:
+    def send_str(self, data: str, compress: typing.Optional[int] = None) -> typing.Coroutine[None, None, None]:
         return self.__ws.send_str(data, compress)

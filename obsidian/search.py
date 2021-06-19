@@ -11,7 +11,7 @@ from .errors import ObsidianSearchFailure, NoSearchMatchesFound
 
 DEFAULT_MATCH_REGEX = compile(r'^https?://(?:www\.)?.+')
 
-__all__ = [
+__all__: list = [
     'TrackSearcher'
 ]
 

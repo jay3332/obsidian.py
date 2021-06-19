@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from aiohttp import ClientResponse
 
-from .node import BaseNode
-
 
 __all__: list = [
     'ObsidianException',
@@ -60,15 +58,17 @@ class ObsidianConnectionFailure(ObsidianException):
     Raised when connecting fails.
     """
 
-    def __init__(self, node: BaseNode, error: BaseException) -> None:
-        self.node = node
+    def __init__(self, node, error: BaseException) -> None:
+        from .node import BaseNode
+
+        self.node: BaseNode = node
         self.original = error
 
         message = f'Node {node.identifier!r} failed to connect ({error.__class__.__name__}): {error}'
         super().__init__(message)
 
     @classmethod
-    def from_message(cls, node: BaseNode, message: str) -> ObsidianConnectionFailure:
+    def from_message(cls, node, message: str) -> ObsidianConnectionFailure:
         instance = cls.__new__(cls)
         instance.node = node
         instance.original = None
@@ -81,7 +81,7 @@ class ObsidianAuthorizationFailure(ObsidianConnectionFailure):
     Raised when connecting fails due to invalid authorization.
     """
 
-    def __new__(cls, node: BaseNode, *args, **kwargs) -> ObsidianAuthorizationFailure:
+    def __new__(cls, node, *args, **kwargs) -> ObsidianAuthorizationFailure:
         message = f'Node {node.identifier!r} failed authorization.'
         return ObsidianConnectionFailure.from_message(node, message)
 

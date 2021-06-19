@@ -8,14 +8,14 @@ import asyncio
 from discord.ext import commands
 
 from .stats import Stats
-from .pool import NodePool
 from .player import Player
 from .http import HTTPClient
 from .websocket import Websocket
-from .enums import OpCode, Source
 from .search import TrackSearcher
-from .track import Track, Playlist
 from .errors import NodeNotConnected
+
+from .enums import OpCode, Source
+from .track import Track, Playlist
 
 
 Bot = typing.Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
@@ -56,6 +56,8 @@ class BaseNode(object):
         self.__http: HTTPClient = HTTPClient(
             self.__session, self._host, self._port, self._password
         )
+
+        self.__internal__ = kwargs
 
     @property
     def bot(self) -> Bot:
@@ -128,7 +130,14 @@ class BaseNode(object):
             session: typing.Optional[aiohttp.ClientSession] = None,
             loop: typing.Optional[asyncio.AbstractEventLoop] = None
     ) -> None:
-        self.__ws = Websocket(self, session or self.__session, loop or self.__loop)
+        await self.bot.wait_until_ready()
+
+        connect_kwargs = {
+            'heartbeat': self.__internal__.get('heartbeat'),
+            'secure': self.__internal__.get('secure', False)
+        }
+
+        self.__ws = Websocket(self, session or self.__session, loop or self.__loop, **connect_kwargs)
         await self.ws.connect()
 
     async def disconnect(self, *, force: bool = False) -> None:
@@ -147,6 +156,8 @@ class BaseNode(object):
         __log__.info(f'NODE {self.identifier!r} | Node disconnected.')
 
     async def destroy(self, *, force: bool = False) -> None:
+        from .pool import NodePool
+
         await self.disconnect(force=force)
         del NodePool._nodes[self.identifier]
 
