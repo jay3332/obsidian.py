@@ -345,13 +345,14 @@ class Player:
 
         self._current = None
 
-    async def set_pause(self, pause: typing.Optional[bool] = None) -> None:
+    async def set_pause(self, pause: typing.Optional[bool] = None) -> bool:
         pause = pause if pause is not None else not self._paused
 
         await self._node.send(OpCode.PLAYER_PAUSE, {'guild_id': str(self._guild.id), 'state': pause})
         __log__.info(f'PLAYER | {self._guild.id} set its paused state to {pause}.')
 
-        self._paused = pause
+        self._paused = res = pause
+        return res
 
     async def set_position(self, position: float) -> None:
         if not self._current or 0 > position > self._current.length:

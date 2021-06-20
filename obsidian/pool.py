@@ -53,4 +53,4 @@ class _NodePool:
         return self._nodes.get(identifier)
 
 
-NodePool: _NodePool = _NodePool()
+NodePool = _NodePool()

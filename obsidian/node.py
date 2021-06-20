@@ -180,12 +180,22 @@ class BaseNode(object):
 
         __log__.debug(f'NODE {self.identifier!r} | Sent a {op} websocket payload: {payload}')
 
-    def get_player(self, guild: typing.Union[discord.Guild, discord.Object, int], cls: type = Player, *args, **kwargs) -> Player:
+    def get_player(
+            self,
+            guild: typing.Union[discord.Guild, discord.Object, int],
+            cls: type = Player,
+            must_exist: bool = False,
+            *args,
+            **kwargs
+    ) -> typing.Optional[Player]:
         if isinstance(guild, int):
             guild = discord.Object(guild)
 
         player = self._players.get(guild.id)
         if not player:
+            if must_exist:
+                return
+
             player = cls(self, self._bot, guild, *args, **kwargs)
             self._players[guild.id] = player
             return player
@@ -213,7 +223,6 @@ class BaseNode(object):
             source: typing.Optional[Source] = None,
             cls: type = Track,
             suppress: bool = False,
-            limit: typing.Optional[int] = None,
             **kwargs
     ) -> typing.Optional[typing.Union[Track, Playlist]]:
         ...
@@ -229,6 +238,7 @@ class BaseNode(object):
             source: typing.Optional[Source] = None,
             cls: type = Track,
             suppress: bool = True,
+            limit: typing.Optional[int] = None,
             **kwargs
     ) -> typing.Optional[typing.Union[typing.List[Track], Playlist]]:
         ...
@@ -250,7 +260,7 @@ class Node(BaseNode):
             self.__stats = Stats(data)
             return
 
-        player = self.get_player(int(data['guild_id']))
+        player = self.get_player(int(data['guild_id']), must_exist=True)
         if not player:
             return
 
