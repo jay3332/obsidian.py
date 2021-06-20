@@ -1,5 +1,6 @@
 from .enums import *
 from .errors import *
+from .events import *
 from .filters import *
 from .node import BaseNode, Node
 from .player import Player

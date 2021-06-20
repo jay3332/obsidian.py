@@ -57,3 +57,26 @@ class SearchType(Enum):
     PLAYLIST = 'playlist'
     ALBUM = 'album'
     ARTIST = 'artist'
+
+
+class EventType(Enum):
+    TRACK_START = 'TRACK_START'
+    TRACK_END = 'TRACK_END'
+    TRACK_STUCK = 'TRACK_STUCK'
+    TRACK_EXCEPTION = 'TRACK_EXCEPTION'
+    WEBSOCKET_OPEN = 'WEBSOCKET_OPEN'
+    WEBSOCKET_CLOSED = 'WEBSOCKET_CLOSED'
+
+
+class TrackEndReason(Enum):
+    STOPPED = 'STOPPED'
+    REPLACED = 'REPLACED'
+    CLEANUP = 'CLEANUP'
+    LOAD_FAILED = 'LOAD_FAILED'
+    FINISHED = 'FINISHED'
+
+
+class TrackExceptionSeverity(Enum):
+    COMMON = 'COMMON'
+    SUSPICIOUS = 'SUSPICIOUS'
+    FAULT = 'FAULT'

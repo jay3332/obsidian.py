@@ -9,6 +9,7 @@ from abc import ABC
 from discord.ext import commands
 
 from .filters import FilterSink, VolumeFilter, BaseFilter
+from .events import get_cls
 from .enums import OpCode
 from .track import Track
 
@@ -250,18 +251,17 @@ class Player:
         self._paused = current_track.get('paused', False)
 
     def dispatch_event(self, data: typing.Dict[str, typing.Any]) -> None:
-        return  # Not implemented
-
-        name = "".join(word.title() for word in data.get("type").split("_"))
-        event = getattr(events, name, None)
-
-        if not event:
-            __log__.error(f'PLAYER {self.guild_id!r} received unknown event type: {data} ')
+        try:
+            t = data['t']
+        except KeyError:
+            __log__.error(f'PLAYER | {self.guild_id!r} received unknown event type: {data}')
             return
+        else:
+            t = get_cls(t)
 
-        event = event(data)
+        event = t(data)
 
-        __log__.info(f'PLAYER {self.guild_id!r} dispatching {event.type!r}: {data}')
+        __log__.info(f'PLAYER | {self.guild_id!r} dispatching {event.type!r}: {data}')
         self.node.dispatch_event(f'obsidian_{event.type.value.lower()}', self, event)
 
     async def dispatch_voice_update(self) -> None:
