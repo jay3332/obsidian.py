@@ -9,7 +9,12 @@ Basic music bot with simple join, leave, play, and pause commands.
 """
 
 bot = commands.Bot(command_prefix='$', description=description)
-bot.obsidian = obsidian.initiate_node(bot)
+
+
+async def _setup():
+    bot.obsidian = await obsidian.initiate_node(bot)
+
+bot.loop.create_task(_setup())
 
 
 @bot.command(aliases=['connect'])
