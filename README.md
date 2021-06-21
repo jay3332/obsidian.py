@@ -25,8 +25,9 @@ This wrapper is based off of [Slate](https://github.com/Axelancerr/Slate).
 - Fully asynchronous
 - Object oriented
 - Playlist support
-- Filter support
+- Advanced audio filter support
 - Querying tracks from many sources 
+- Fully typed 
 
 ## Examples 
 ### Basic

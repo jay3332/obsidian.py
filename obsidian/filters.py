@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, overload
+from functools import wraps
+from typing import Any, Callable, Dict, List, Optional, overload
 
 
 _FILTERS = [
@@ -19,7 +20,9 @@ __all__: list = [
     'FilterSink',
     'BaseFilter',
     'VolumeFilter',
-    'TimescaleFilter'
+    'TimescaleFilter',
+    'RotationFilter',
+    'Equalizer'
 ]
 
 
@@ -36,7 +39,8 @@ class FilterSink(object):
         self.__filters: Dict[str, BaseFilter] = {}
 
     def __repr__(self) -> str:
-        return '<FilterSink>'
+        extra = ''.join(f' {key}={filter!r}' for key, filter in self.__filters.items())
+        return f'<FilterSink{extra}>'
 
     @property
     def player(self):
@@ -53,6 +57,16 @@ class FilterSink(object):
     @property
     def timescale(self) -> Optional[TimescaleFilter]:
         return self.filters.get('timescale')
+
+    @property
+    def rotation(self) -> Optional[RotationFilter]:
+        return self.filters.get('rotation')
+
+    @property
+    def equalizer(self) -> Optional[Equalizer]:
+        return self.filters.get('equalizer')
+
+    eq = equalizer
 
     def add(self, filter: BaseFilter) -> FilterSink:
         if not isinstance(filter, BaseFilter):
@@ -315,3 +329,148 @@ class TimescaleFilter(BaseFilter):
                 entities += f' {key}={value!r}'
 
         return f'<TimescaleFilter{entities}>'
+
+
+class RotationFilter(BaseFilter):
+    def __init__(self, hz: float = 5.0) -> None:
+        self.__hz: float = None
+        self.hz = hz  # Let the setter handle it
+
+    def __repr__(self) -> str:
+        return f'<RotationFilter hz={self.__hz:.2f}>'
+
+    @property
+    def identifier(self) -> str:
+        return 'rotation'
+
+    @property
+    def hz(self) -> float:
+        return self.__hz
+
+    @hz.setter
+    def hz(self, new: float) -> None:
+        if new <= 0:
+            raise ValueError('hz must be positive.')
+
+        self.__hz = new
+
+    @classmethod
+    def from_raw(cls, data: float) -> RotationFilter:
+        return cls(data)
+
+    def to_raw(self) -> float:
+        return self.__hz
+
+
+class Equalizer(BaseFilter):
+    def __init__(self, *gains: float, name: str = 'custom'):
+        if any(gain < -.25 or gain > 1 for gain in gains):
+            raise ValueError('All equalizer gains must be between -0.25 and +1.')
+
+        _extend = []
+        if len(gains) < 15:
+            _extend = [0] * (15 - len(gains))
+
+        if len(gains) > 15:
+            gains = gains[:15]
+
+        self.__gains: List[float] = list(gains) + _extend
+        self.__name: str = name
+
+    def __repr__(self) -> str:
+        return f'<Equalizer name={self.name!r}>'
+
+    def __str__(self) -> str:
+        return self.name
+
+    @property
+    def gains(self) -> List[float]:
+        return self.__gains
+
+    @property
+    def name(self) -> str:
+        return self.__name
+
+    def set(self, index: int, gain: float) -> None:
+        try:
+            self.__gains[index] = gain
+        except IndexError:
+            raise IndexError(f'Invalid index "{index}".')
+
+    @overload
+    def reset(self, index: int) -> None:
+        ...
+
+    @overload
+    def reset(self) -> None:
+        ...
+
+    def reset(self, index: Any = None) -> None:
+        if index is None:
+            self.__gains = [0] * 15
+            return
+
+        try:
+            self.__gains[index] = 0
+        except IndexError:
+            raise IndexError(f'Invalid index "{index}".')
+
+    @staticmethod
+    def ___factory(func) -> callable:
+        @wraps(func)
+        def inner(cls, *args, **kwargs):
+            gains = func(cls, *args, **kwargs)
+            return cls(*gains, name=func.__name__)
+
+        inner.__eq_factory__ = True
+        return inner
+
+    __factory = ___factory.__func__
+
+    @classmethod
+    @__factory
+    def flat(cls) -> Equalizer:
+        return ()
+
+    @classmethod
+    @__factory
+    def boost(cls) -> Equalizer:
+        return -.075, .125, .125, .1, .1, .05, .075, 0, 0, 0, 0, 0, .125, .15, .05
+
+    @classmethod
+    @__factory
+    def metal(cls) -> Equalizer:
+        return 0, .1, .1, .15, .13, .1, 0, .125, .175, .175, .125, .125, .1, .075, 0
+
+    @classmethod
+    @__factory
+    def piano(cls) -> Equalizer:
+        return -.25, -.25, -.125, 0, .25, .25, 0, -.25, -.25, 0, 0, .5, .25, -.025
+
+    @classmethod
+    def all_factory(cls) -> Dict[str, Callable[..., Equalizer]]:
+        result = {}
+        for key in dir(cls):
+            func = getattr(cls, key)
+            try:
+                func = func.__func__
+            except AttributeError:
+                continue
+            else:
+                if not hasattr(func, '__eq_factory__'):
+                    continue
+
+                result[key] = func
+
+        return result
+
+    @property
+    def identifier(self) -> str:
+        return 'equalizer'
+
+    @classmethod
+    def from_raw(cls, data: List[float]) -> None:
+        return cls(*data)
+
+    def to_raw(self) -> List[float]:
+        return self.__gains

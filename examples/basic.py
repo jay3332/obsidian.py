@@ -9,6 +9,7 @@ Basic music bot with simple join, leave, play, and pause commands.
 """
 
 bot = commands.Bot(command_prefix='$', description=description)
+bot.obsidian = None
 
 
 async def _setup():
@@ -68,4 +69,5 @@ async def pause(ctx: commands.Context):
     await ctx.send(f'Set pause to {new_pause}.')
 
 
-bot.run(...)
+if __name__ == '__main__':
+    bot.run(...)

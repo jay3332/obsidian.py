@@ -8,7 +8,7 @@ import logging
 from abc import ABC
 from discord.ext import commands
 
-from .filters import FilterSink, VolumeFilter, BaseFilter
+from .filters import FilterSink, VolumeFilter, BaseFilter, Equalizer
 from .events import get_cls
 from .enums import OpCode
 from .track import Track
@@ -201,6 +201,12 @@ class Player:
         return self.__sink.volume.percent if self.__sink.volume else 100
 
     @property
+    def equalizer(self) -> typing.Optional[Equalizer]:
+        return self.__sink.equalizer
+
+    eq = equalizer
+
+    @property
     def listeners(self) -> typing.List[discord.Member]:
         if not self._channel:
             return []
@@ -371,6 +377,10 @@ class Player:
         self.__sink.add(VolumeFilter(volume / 100))
         await self.update_filters()
 
+    async def set_equalizer(self, equalizer: Equalizer) -> None:
+        self.__sink.add(equalizer)
+        await self.update_filters()
+
     async def update_filters(self) -> None:
         await self._node.send(OpCode.PLAYER_FILTERS, self.__sink.to_json(self.guild_id))
         __log__.info(f'PLAYER | {self.guild.id} updated filters')
@@ -395,6 +405,8 @@ class Player:
         self.__sink.reset()
         await self.update_filters()
 
+    # Aliases
+
     seek = set_position
     set_filter = set_filters
     overwrite_filters = set_filters
@@ -402,3 +414,4 @@ class Player:
     remove_filters = remove_filter
     reset_filter = reset_filters
     set_vol = set_volume
+    set_eq = set_equalizer
