@@ -179,7 +179,7 @@ class Playlist:
     @property
     def selected_track(self) -> typing.Optional[Track]:
         try:
-            return self._tracks[self._selected_track]
+            return self.tracks[self._selected_track]
         except IndexError:
             return None
 

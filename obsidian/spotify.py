@@ -1,11 +1,14 @@
+import re
 import aiohttp
 import asyncio
 import logging
 
 from base64 import b64encode
 from discord.backoff import ExponentialBackoff
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 from urllib.parse import quote
+
+from .track import Track, Playlist
 
 from .errors import (
     SpotifyHTTPError,
@@ -14,13 +17,13 @@ from .errors import (
 
 
 __all__: list = [
-    'SpotifyClient'
+    'SpotifyHTTPClient'
 ]
 
 __log__: logging.Logger = logging.getLogger('obsidian.spotify')
 
 
-class SpotifyClient:
+class SpotifyHTTPClient:
     BASE_URL = 'https://api.spotify.com/v1/'
 
     def __init__(
@@ -41,6 +44,17 @@ class SpotifyClient:
         self._user_agent: str = f'Application (https://github.com/jay3332/obsidian.py {__version__})'
 
         self.__access_token: Optional[str] = None
+
+    def __repr__(self) -> str:
+        return f'<SpotifyHTTPClient client_id={self._client_id!r}>'
+
+    @property
+    def loop(self) -> asyncio.AbstractEventLoop:
+        return self.__loop
+
+    @property
+    def session(self) -> aiohttp.ClientSession:
+        return self.__session
 
     @property
     def _token(self) -> None:
@@ -311,7 +325,7 @@ class SpotifyClient:
     ) -> List[Dict[str, Any]]:
         payload = {
             "q": quote(query),
-            "type": 'track,playlist,album',
+            "type": 'track',
             "limit": limit,
             "offset": offset
         }
@@ -319,4 +333,135 @@ class SpotifyClient:
         if market is not None:
             payload['market'] = market
 
-        return await self.request('GET', '/search', parameters=payload)
+        response = await self.request('GET', '/search', parameters=payload)
+
+        try:
+            return response['tracks']['items']
+        except KeyError:
+            return []
+
+
+class SpotifyClient:
+    """
+    Class that interacts with Spotify.
+    """
+
+    URI_REGEX: re.Pattern = re.compile(
+        r'<?http(s)?://open.spotify.com/(?P<type>album|playlist|track|artist)/(?P<id>[a-zA-Z0-9]+)/?>?'
+    )
+
+    def __init__(
+            self,
+            client_id: str,
+            client_secret: str,
+            *,
+            session: Optional[aiohttp.ClientSession] = None,
+            loop: Optional[asyncio.AbstractEventLoop] = None
+    ):
+        self.__http = http = SpotifyHTTPClient(
+            client_id,
+            client_secret,
+            session=session,
+            loop=loop
+        )
+
+        self._loop: asyncio.AbstractEventLoop = http.loop
+        self._session: aiohttp.ClientSession = http.session
+
+        self._client_id: str = client_id
+        self._client_secret: str = client_secret
+
+    def __repr__(self) -> None:
+        return f'<SpotifyClient client_id={self._client_id!r}>'
+
+    @property
+    def http(self) -> SpotifyHTTPClient:
+        return self.__http
+
+    def sanitize_playlist_info(self, info: Dict[str, Any]) -> Dict[str, Any]:
+        return {
+            'name': info.get('name', 'Unknown'),
+            'selected_track': 0,
+            'uri': info.get("external_urls", {}).get("spotify", ''),
+        }
+
+    def sanitize_track(self, track: Dict[str, Any]) -> Dict[str, Any]:
+        author = ', '.join(
+            artist['name'] for artist in track.get('artists', [])
+        ).strip()
+
+        if not author:
+            author = 'Unknown author'
+
+        thumbnail = ''
+        _images = track.get('images')
+
+        if _images:
+            thumbnail = _images[0].get('url', '')
+        elif 'album' in track:
+            _images = track['album'].get('images')
+
+            if _images:
+                thumbnail = _images[0].get('url', '')
+
+        return {
+            'title': track.get('name', 'Unknown'),
+            'author': author,
+            'uri': track.get("external_urls", {}).get("spotify", ''),
+            'identifier': track.get('id', 'Unknown'),
+            'length': track.get('duration_ms', 0),
+            'position': 0,
+            'is_stream': False,
+            'is_seekable': False,
+            'source_name': 'spotify',
+            'thumbnail': thumbnail
+        }
+
+    async def get_track(
+            self,
+            query: str,
+            *,
+            market: str = None,
+            cls: type = Track,
+            **kwargs
+    ) -> Union[Track, Playlist]:
+        match = self.URI_REGEX.match(query)
+
+        response = None
+
+        if match is not None:
+            search_type = match.group('type')
+            spotify_id = match.group('id')
+
+            if search_type == 'album':
+                response = await self.http.get_all_album_tracks(
+                    spotify_id,
+                    market=market
+                )
+            elif search_type == 'playlist':
+                response = await self.http.get_all_playlist_tracks(
+                    spotify_id,
+                    market=market
+                )
+            elif search_type == 'artist':
+                pass  # Not implemented
+            elif search_type == 'track':
+                response = await self.http.get_track(
+                    spotify_id,
+                    market=market
+                )
+                track = self.sanitize_track(response)
+                return cls(id='', info=track, **kwargs)
+
+            if search_type != 'track':
+                tracks = [
+                    self.sanitize_track(track)
+                    for track in response['items']
+                ]
+
+                return Playlist(
+                    info=self.sanitize_playlist_info(response),
+                    tracks=tracks,
+                    cls=cls,
+                    **kwargs
+                )

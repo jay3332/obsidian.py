@@ -9,7 +9,7 @@ from .enums import Source, LoadType
 from .errors import ObsidianSearchFailure, NoSearchMatchesFound
 
 
-DEFAULT_MATCH_REGEX = compile(r'^https?://(?:www\.)?.+')
+DEFAULT_MATCH_REGEX = compile(r'^<?https?://(?:www\.)?.+>?')
 
 __all__: list = [
     'TrackSearcher'
@@ -63,6 +63,8 @@ class TrackSearcher:
             elif source is Source.YOUTUBE_MUSIC:
                 query = 'ytmsearch:' + query
 
+        if query.startswith('<') and query.endswith('>'):
+            query = query[1:-1]
         return query
 
     async def _get_tracks(self, query: str, source: Optional[Source] = None, **kwargs) -> Tuple[Dict[str, Any], LoadType]:
