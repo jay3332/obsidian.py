@@ -4,7 +4,8 @@ import logging
 
 from base64 import b64encode
 from discord.backoff import ExponentialBackoff
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
+from urllib.parse import quote
 
 from .errors import (
     SpotifyHTTPError,
@@ -277,3 +278,45 @@ class SpotifyClient:
             offset += 100
 
         return {**first_encounter, 'items': tracks}
+
+    async def get_artist_top_tracks(
+            self,
+            artist_id: str,
+            *,
+            market: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        payload = {'market': market or 'US'}
+        return await self.request('GET', f"/artists/{artist_id}/top-tracks", parameters=payload)
+
+    async def get_track(
+            self,
+            track_id: str,
+            *,
+            market: Optional[str] = None
+    ) -> Dict[str, Any]:
+        payload = {}
+
+        if market is not None:
+            payload['market'] = market
+
+        return await self.request('GET', f"/tracks/{track_id}", parameters=payload)
+
+    async def search(
+            self,
+            query: str,
+            *,
+            market: str = 'US',
+            limit: int = 20,
+            offset: int = 0
+    ) -> List[Dict[str, Any]]:
+        payload = {
+            "q": quote(query),
+            "type": 'track,playlist,album',
+            "limit": limit,
+            "offset": offset
+        }
+
+        if market is not None:
+            payload['market'] = market
+
+        return await self.request('GET', '/search', parameters=payload)
