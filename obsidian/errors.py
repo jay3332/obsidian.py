@@ -12,7 +12,10 @@ __all__: list = [
     'NodeAlreadyExists',
     'NodeCreationError',
     'ObsidianConnectionFailure',
-    'ObsidianAuthorizationFailure'
+    'ObsidianAuthorizationFailure',
+    'ObsidianSpotifyException',
+    'SpotifyHTTPError',
+    'SpotifyAuthorizationFailure'
 ]
 
 
@@ -45,6 +48,28 @@ class HTTPError(ObsidianException):
     def __init__(self, message: str, response: ClientResponse) -> None:
         super().__init__(message)
         self.response: ClientResponse = response
+
+
+class ObsidianSpotifyException(ObsidianException):
+    """
+    Raised when an error related to spotify occurs.
+    """
+
+
+class SpotifyHTTPError(ObsidianSpotifyException):
+    """
+    Raised when an error via HTTP request [Spotify] occurs.
+    """
+
+    def __init__(self, message: str, response: ClientResponse) -> None:
+        super().__init__(message)
+        self.response: ClientResponse = response
+
+
+class SpotifyAuthorizationFailure(SpotifyHTTPError):
+    """
+    Raised when authorizing to spotify fails.
+    """
 
 
 class NodeNotConnected(ObsidianException):
