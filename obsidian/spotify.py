@@ -157,7 +157,6 @@ class SpotifyClient:
             self,
             album_id: str,
             *,
-            limit: Optional[int] = None,
             market: Optional[str] = None
     ) -> Dict[str, Any]:
         """Helper function to retrieve all album tracks past the limit of 50.
@@ -166,8 +165,6 @@ class SpotifyClient:
         ----------
         album_id : str
             The ID of the album to use.
-        limit : Optional[int]
-            The maximum amount of tracks to return.
         market : Optional[str]
             An ISO 3166-1 alpha-2 country code.
 
@@ -177,13 +174,15 @@ class SpotifyClient:
             The raw JSON response from Spotify.
         """
 
-        payload = {'limit': limit}
+        payload = {}
 
         if market is not None:
             payload['market'] = market
 
         offset = 0
         tracks = []
+
+        limit = None
         first_encounter = None
 
         while limit is None or len(tracks) < limit:
@@ -206,5 +205,75 @@ class SpotifyClient:
                 first_encounter = response
 
             offset += 50
+
+        return {**first_encounter, 'items': tracks}
+
+    async def get_playlist_tracks(
+            self,
+            playlist_id: str,
+            *,
+            limit: int = 100,
+            offset: int = 0,
+            market: Optional[str] = None
+    ) -> Dict[str, Any]:
+        payload = {'limit': limit, 'offset': offset}
+
+        if market is not None:
+            payload['market'] = market
+
+        return await self.request('GET', f"/playlists/{playlist_id}/tracks", parameters=payload)
+
+    async def get_all_playlist_tracks(
+            self,
+            playlist_id: str,
+            *,
+            market: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """Helper function to retrieve all playlist tracks past the limit of 100.
+
+        Parameters
+        ----------
+        playlist_id : str
+            The ID of the playlist to use.
+        market : Optional[str]
+            An ISO 3166-1 alpha-2 country code.
+
+        Returns
+        -------
+        Dict[str, Any]
+            The raw JSON response from Spotify.
+        """
+
+        payload = {}
+
+        if market is not None:
+            payload['market'] = market
+
+        offset = 0
+        tracks = []
+
+        limit = None
+        first_encounter = None
+
+        while limit is None or len(tracks) < limit:
+            kwargs = {**payload, 'offset': offset}
+
+            response = await self.get_playlist_tracks(playlist_id, **kwargs)
+            if limit is None:
+                try:
+                    limit = response['total']
+                except KeyError:
+                    break
+
+            try:
+                tracks += response['items']
+            except KeyError:
+                pass
+
+            if first_encounter is None:
+                response.pop('items', None)
+                first_encounter = response
+
+            offset += 100
 
         return {**first_encounter, 'items': tracks}
