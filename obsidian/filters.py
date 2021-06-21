@@ -22,7 +22,9 @@ __all__: list = [
     'VolumeFilter',
     'TimescaleFilter',
     'RotationFilter',
-    'Equalizer'
+    'Equalizer',
+    'VibratoFilter',
+    'TremoloFilter'
 ]
 
 
@@ -67,6 +69,14 @@ class FilterSink(object):
         return self.filters.get('equalizer')
 
     eq = equalizer
+
+    @property
+    def vibrato(self) -> Optional[VibratoFilter]:
+        return self.filters.get('vibrato')
+
+    @property
+    def tremolo(self) -> Optional[TremoloFilter]:
+        return self.filters.get('tremolo')
 
     def add(self, filter: BaseFilter) -> FilterSink:
         if not isinstance(filter, BaseFilter):
@@ -474,3 +484,69 @@ class Equalizer(BaseFilter):
 
     def to_raw(self) -> List[float]:
         return self.__gains
+
+
+class VibratoFilter(BaseFilter):
+    def __init__(self, frequency: float = 2.0, depth: float = 0.5) -> None:
+        self.__frequency: float = None
+        self.__depth: float = None
+
+        # Let setters handle checks
+        self.frequency = frequency
+        self.depth = depth
+
+    def __repr__(self) -> str:
+        return f'<{self.__class__.__name__} frequency={self.frequency:.2f} depth={self.depth:.2f}>'
+
+    @property
+    def frequency(self) -> float:
+        return self.__frequency
+
+    @frequency.setter
+    def frequency(self, new: float) -> None:
+        if not 0 < new <= 14:
+            raise ValueError('frequency must be positive and under 14.')
+
+        self.__frequency = new
+
+    @property
+    def depth(self) -> float:
+        return self.__depth
+
+    @depth.setter
+    def depth(self, new: float) -> None:
+        if not 0 < new <= 1:
+            raise ValueError('depth must be between 0 and 1 (but not 0).')
+
+        self.__depth = new
+
+    @property
+    def identifier(self) -> str:
+        return 'vibrato'
+
+    @classmethod
+    def from_raw(cls, data: Dict[str, float]) -> VibratoFilter:
+        return cls(data.get('frequency', 2), data.get('depth', .5))
+
+    def to_raw(self) -> Dict[str, float]:
+        return {'frequency': self.frequency, 'depth': self.depth}
+
+
+class TremoloFilter(VibratoFilter):
+    def __init__(self, frequency: float = 2.0, depth: float = 0.5) -> None:
+        super().__init__(frequency, depth)
+
+    @property
+    def frequency(self) -> float:
+        return self.__frequency
+
+    @frequency.setter
+    def frequency(self, new: float) -> None:
+        if new <= 0:
+            raise ValueError('frequency must be positive.')
+
+        self.__frequency = new
+
+    @property
+    def identifier(self) -> str:
+        return 'tremolo'
