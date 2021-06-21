@@ -35,16 +35,21 @@ class SpotifyClient:
         self.__loop: asyncio.AbstractEventLoop = loop or asyncio.get_event_loop()
         self.__session: aiohttp.ClientSession = session or aiohttp.ClientSession()
 
-        self._client_id = client_id
-        self._client_secret = client_secret
-        self._user_agent = f'Application (https://github.com/jay3332/obsidian.py {__version__})'
+        self._client_id: str = client_id
+        self._client_secret: str = client_secret
+        self._user_agent: str = f'Application (https://github.com/jay3332/obsidian.py {__version__})'
+
+        self.__access_token: Optional[str] = None
 
     @property
     def _token(self) -> None:
         key = self._client_id + ':' + self._client_secret
         return b64encode(key.encode()).decode()
 
-    async def _retrieve_token(self) -> None:
+    async def _retrieve_token(self, *, generate_new: bool = False) -> None:
+        if self.__access_token is not None and not generate_new:
+            return self.__access_token
+
         data = {"grant_type": "client_credentials"}
         headers = {"Authorization": f"Basic {self._token}"}
 
@@ -58,7 +63,9 @@ class SpotifyClient:
                 raise SpotifyAuthorizationFailure('Failed to authorize to spotify.', response)
 
             try:
-                return info['access_token']
+                result = info['access_token']
+                self.__access_token = result
+                return result
             except KeyError:
                 pass
 
@@ -69,7 +76,7 @@ class SpotifyClient:
             parameters: Optional[Dict[str, Any]] = None,
             payload: Optional[Dict[str, Any]] = None,
             *,
-            max_retries: int = 3,
+            max_retries: int = 5,
             backoff: Optional[ExponentialBackoff] = None,
             headers: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
@@ -109,7 +116,7 @@ class SpotifyClient:
                     return await response.json(encoding='utf-8')
 
                 if response.status == 401:
-                    token = await self._retrieve_token()
+                    token = await self._retrieve_token(generate_new=True)
                     headers["Authorization"] = "Bearer " + token
                     continue
 
@@ -130,3 +137,72 @@ class SpotifyClient:
 
         __log__.error(message)
         raise SpotifyHTTPError(message, response)
+
+    async def get_album_tracks(
+            self,
+            album_id: str,
+            *,
+            limit: int = 50,
+            offset: int = 0,
+            market: Optional[str] = None
+    ) -> Dict[str, Any]:
+        payload = {'limit': limit, 'offset': offset}
+
+        if market is not None:
+            payload['market'] = market
+
+        return await self.request('GET', f"/albums/{album_id}/tracks", parameters=payload)
+
+    async def get_all_album_tracks(
+            self,
+            album_id: str,
+            *,
+            limit: Optional[int] = None,
+            market: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """Helper function to retrieve all album tracks past the limit of 50.
+
+        Parameters
+        ----------
+        album_id : str
+            The ID of the album to use.
+        limit : Optional[int]
+            The maximum amount of tracks to return.
+        market : Optional[str]
+            An ISO 3166-1 alpha-2 country code.
+
+        Returns
+        -------
+        Dict[str, Any]
+            The raw JSON response from Spotify.
+        """
+
+        payload = {'limit': limit}
+
+        if market is not None:
+            payload['market'] = market
+
+        offset = 0
+        tracks = []
+        first_encounter = None
+
+        while limit is None or len(tracks) < limit:
+            kwargs = {**payload, 'offset': offset}
+
+            response = await self.get_album_tracks(album_id, **kwargs)
+            if limit is None:
+                try:
+                    limit = response['total']
+                except KeyError:
+                    break
+
+            try:
+                tracks += response['items']
+            except KeyError:
+                pass
+
+            if first_encounter is None:
+                response.pop('items', None)
+                first_encounter = response
+
+        return {**first_encounter, 'items': tracks}
