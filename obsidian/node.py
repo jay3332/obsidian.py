@@ -166,11 +166,14 @@ class BaseNode(object):
 
         __log__.info(f'NODE {self.identifier!r} | Node has been destroyed.')
 
-    async def send(self, op: OpCode, data: dict) -> None:
+    async def send(self, op: typing.Union[OpCode, int], data: dict) -> None:
         if not self.connected:
             raise NodeNotConnected(f'Node {self.identifier!r} is not connected.')
 
-        payload = {'op': op.value, 'd': data}
+        if not isinstance(op, int):
+            op = op.value
+
+        payload = {'op': op, 'd': data}
 
         data = json.dumps(payload)
         if isinstance(data, bytes):
