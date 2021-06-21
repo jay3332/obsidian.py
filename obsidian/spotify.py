@@ -205,4 +205,6 @@ class SpotifyClient:
                 response.pop('items', None)
                 first_encounter = response
 
+            offset += 50
+
         return {**first_encounter, 'items': tracks}
