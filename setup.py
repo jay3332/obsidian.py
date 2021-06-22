@@ -19,7 +19,7 @@ with open('obsidian/__init__.py') as f:
         author = 'jay3332'
 
 
-with open('README.md') as f:
+with open('README.md', encoding='utf-8') as f:
     readme = f.read()
 
 
