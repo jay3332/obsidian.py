@@ -458,6 +458,16 @@ class Equalizer(BaseFilter):
         return -.25, -.25, -.125, 0, .25, .25, 0, -.25, -.25, 0, 0, .5, .25, -.025
 
     @classmethod
+    @__factory
+    def jazz(cls) -> Equalizer:
+        return -.13, -.11, .1, -.1, .14, .2, -.18, 0, .24, .22, .2, 0, 0, 0, 0
+
+    @classmethod
+    @__factory
+    def pop(cls) -> Equalizer:
+        return -.02, -.01, .08, .1, .15, .1, .03, -.02, -.035, -.05, -.05, -.05, -.05, -.05, -.05
+
+    @classmethod
     def all_factory(cls) -> Dict[str, Callable[..., Equalizer]]:
         result = {}
         for key in dir(cls):
