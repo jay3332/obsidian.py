@@ -17,6 +17,8 @@ from .errors import NodeNotConnected
 from .enums import OpCode, Source
 from .track import Track, Playlist
 
+from .spotify import SpotifyClient
+
 
 Bot = typing.Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
 
@@ -28,6 +30,63 @@ __log__: logging.Logger = logging.getLogger('obsidian.node')
 
 
 class BaseNode(object):
+    @typing.overload
+    def __init__(
+            self,
+            bot: Bot,
+            host: str = '127.0.0.1',
+            port: typing.Union[str, int] = '3030',
+            password: typing.Optional[str] = None,
+            identifier: typing.Optional[str] = None,
+            region: typing.Optional[discord.VoiceRegion] = None,
+            *,
+            session: typing.Optional[aiohttp.ClientSession] = None,
+            loop: typing.Optional[asyncio.AbstractEventLoop] = None,
+            heartbeat: typing.Optional[float] = None,
+            secure: typing.Optional[bool] = None,
+            **kwargs
+    ) -> None:
+        ...
+
+    @typing.overload
+    def __init__(
+            self,
+            bot: Bot,
+            host: str = '127.0.0.1',
+            port: typing.Union[str, int] = '3030',
+            password: typing.Optional[str] = None,
+            identifier: typing.Optional[str] = None,
+            region: typing.Optional[discord.VoiceRegion] = None,
+            *,
+            session: typing.Optional[aiohttp.ClientSession] = None,
+            loop: typing.Optional[asyncio.AbstractEventLoop] = None,
+            heartbeat: typing.Optional[float] = None,
+            secure: typing.Optional[bool] = None,
+            spotify: typing.Optional[SpotifyClient] = None,
+            **kwargs
+    ) -> None:
+        ...
+
+    @typing.overload
+    def __init__(
+            self,
+            bot: Bot,
+            host: str = '127.0.0.1',
+            port: typing.Union[str, int] = '3030',
+            password: typing.Optional[str] = None,
+            identifier: typing.Optional[str] = None,
+            region: typing.Optional[discord.VoiceRegion] = None,
+            *,
+            session: typing.Optional[aiohttp.ClientSession] = None,
+            loop: typing.Optional[asyncio.AbstractEventLoop] = None,
+            heartbeat: typing.Optional[float] = None,
+            secure: typing.Optional[bool] = None,
+            spotify_client_id: typing.Optional[str] = None,
+            spotify_client_secret: typing.Optional[str] = None,
+            **kwargs
+    ) -> None:
+        ...
+
     def __init__(
             self,
             bot: Bot,
@@ -56,6 +115,23 @@ class BaseNode(object):
         self.__http: HTTPClient = HTTPClient(
             self.__session, self._host, self._port, self._password
         )
+
+        spotify = kwargs.get('spotify')
+        spotify_client_id = kwargs.get('spotify_client_id')
+        spotify_client_secret = kwargs.get('spotify_client_secret')
+
+        self._spotify: typing.Optional[SpotifyClient] = None
+
+        if spotify:
+            self._spotify = spotify
+
+        elif spotify_client_id and spotify_client_secret:
+            self._spotify = SpotifyClient(
+                spotify_client_id,
+                spotify_client_secret,
+                loop=self.__loop,
+                session=self.__session
+            )
 
         self.__internal__ = kwargs
 
@@ -93,6 +169,10 @@ class BaseNode(object):
     @property
     def players(self) -> typing.Dict[int, Player]:
         return self._players
+
+    @property
+    def spotify(self) -> typing.Optional[SpotifyClient]:
+        return self._spotify
 
     @property
     def loop(self) -> asyncio.AbstractEventLoop:
@@ -269,5 +349,6 @@ class Node(BaseNode):
 
         if op is OpCode.PLAYER_EVENT:
             player.dispatch_event(data)
+
         elif op is OpCode.PLAYER_UPDATE:
             player.update_state(data)

@@ -5,9 +5,10 @@ from .filters import *
 from .node import BaseNode, Node
 from .player import Player
 from .pool import NodePool
+from .search import TrackSearcher
+from .spotify import SpotifyClient
 from .stats import Stats
 from .track import Track, Playlist
-from .search import TrackSearcher
 
 
 initiate_node = NodePool.initiate_node

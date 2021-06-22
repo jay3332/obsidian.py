@@ -1,10 +1,14 @@
 import typing
 import discord
+import aiohttp
+import asyncio
 
 from discord.ext import commands
 
 from .node import BaseNode, Node
 from .errors import NodeAlreadyExists
+
+from .spotify import SpotifyClient
 
 
 __all__: list = [
@@ -24,6 +28,66 @@ class _NodePool:
     @property
     def nodes(self) -> typing.Dict[str, BaseNode]:
         return self._nodes
+
+    @typing.overload
+    async def initiate_node(
+            self,
+            bot: Bot,
+            host: str = '127.0.0.1',
+            port: typing.Union[str, int] = '3030',
+            password: typing.Optional[str] = None,
+            identifier: typing.Optional[str] = None,
+            region: typing.Optional[discord.VoiceRegion] = None,
+            *,
+            cls: type = Node,
+            session: typing.Optional[aiohttp.ClientSession] = None,
+            loop: typing.Optional[asyncio.AbstractEventLoop] = None,
+            heartbeat: typing.Optional[float] = None,
+            secure: typing.Optional[bool] = None,
+            **kwargs
+    ) -> BaseNode:
+        ...
+
+    @typing.overload
+    async def initiate_node(
+            self,
+            bot: Bot,
+            host: str = '127.0.0.1',
+            port: typing.Union[str, int] = '3030',
+            password: typing.Optional[str] = None,
+            identifier: typing.Optional[str] = None,
+            region: typing.Optional[discord.VoiceRegion] = None,
+            *,
+            cls: type = Node,
+            session: typing.Optional[aiohttp.ClientSession] = None,
+            loop: typing.Optional[asyncio.AbstractEventLoop] = None,
+            heartbeat: typing.Optional[float] = None,
+            secure: typing.Optional[bool] = None,
+            spotify: typing.Optional[SpotifyClient] = None,
+            **kwargs
+    ) -> BaseNode:
+        ...
+
+    @typing.overload
+    async def initiate_node(
+            self,
+            bot: Bot,
+            host: str = '127.0.0.1',
+            port: typing.Union[str, int] = '3030',
+            password: typing.Optional[str] = None,
+            identifier: typing.Optional[str] = None,
+            region: typing.Optional[discord.VoiceRegion] = None,
+            *,
+            cls: type = Node,
+            session: typing.Optional[aiohttp.ClientSession] = None,
+            loop: typing.Optional[asyncio.AbstractEventLoop] = None,
+            heartbeat: typing.Optional[float] = None,
+            secure: typing.Optional[bool] = None,
+            spotify_client_id: typing.Optional[str] = None,
+            spotify_client_secret: typing.Optional[str] = None,
+            **kwargs
+    ) -> BaseNode:
+        ...
 
     async def initiate_node(
             self,

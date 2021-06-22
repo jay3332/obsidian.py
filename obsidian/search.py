@@ -8,8 +8,11 @@ from .track import Track, Playlist
 from .enums import Source, LoadType
 from .errors import ObsidianSearchFailure, NoSearchMatchesFound
 
+from .spotify import SpotifyClient
 
-DEFAULT_MATCH_REGEX = compile(r'^https?://(?:www\.)?.+')
+
+DEFAULT_MATCH_REGEX = compile(r'^<?https?://(?:www\.)?.+>?')
+SPOTIFY_MATCH_REGEX = SpotifyClient.URI_REGEX
 
 __all__: list = [
     'TrackSearcher'
@@ -63,6 +66,8 @@ class TrackSearcher:
             elif source is Source.YOUTUBE_MUSIC:
                 query = 'ytmsearch:' + query
 
+        if query.startswith('<') and query.endswith('>'):
+            query = query[1:-1]
         return query
 
     async def _get_tracks(self, query: str, source: Optional[Source] = None, **kwargs) -> Tuple[Dict[str, Any], LoadType]:
@@ -97,6 +102,9 @@ class TrackSearcher:
             _suppressor = _EmptyContextManager()
 
         with _suppressor:
+            if (source is Source.SPOTIFY or SPOTIFY_MATCH_REGEX.match(query)) and self._node.spotify:
+                return await self._node.spotify.search_track(query, suppress=suppress, cls=cls, **kwargs)
+
             response, load_type = await self._get_tracks(query, source)
 
             if load_type is LoadType.PLAYLIST_LOADED:
@@ -129,6 +137,9 @@ class TrackSearcher:
             _suppressor = _EmptyContextManager()
 
         with _suppressor:
+            if (source is Source.SPOTIFY or SPOTIFY_MATCH_REGEX.match(query)) and self._node.spotify:
+                return await self._node.spotify.search_tracks(query, limit=limit, suppress=suppress, cls=cls, **kwargs)
+
             response, load_type = await self._get_tracks(query, source)
 
             if load_type is LoadType.PLAYLIST_LOADED:
