@@ -293,7 +293,7 @@ class SpotifyHTTPClient:
 
             offset += 100
 
-        return {**first_encounter, 'items': tracks}
+        return {**first_encounter, 'items': [item['track'] for item in tracks]}
 
     async def get_artist_top_tracks(
             self,
