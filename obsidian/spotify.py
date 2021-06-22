@@ -12,12 +12,14 @@ from .track import Track, Playlist
 
 from .errors import (
     SpotifyHTTPError,
-    SpotifyAuthorizationFailure
+    SpotifyAuthorizationFailure,
+    NoSearchMatchesFound
 )
 
 
 __all__: list = [
-    'SpotifyHTTPClient'
+    'SpotifyHTTPClient',
+    'SpotifyClient'
 ]
 
 __log__: logging.Logger = logging.getLogger('obsidian.spotify')
@@ -347,7 +349,7 @@ class SpotifyClient:
     """
 
     URI_REGEX: re.Pattern = re.compile(
-        r'<?http(s)?://open.spotify.com/(?P<type>album|playlist|track|artist)/(?P<id>[a-zA-Z0-9]+)/?>?'
+        r'<?http(s)?://open.spotify.com/(?P<type>album|playlist|track|artist)/(?P<id>[a-zA-Z0-9]+).*/?>?'
     )
 
     def __init__(
@@ -417,51 +419,128 @@ class SpotifyClient:
             'thumbnail': thumbnail
         }
 
-    async def get_track(
+    async def _search_track(
             self,
             query: str,
+            *,
+            market: Optional[str] = None,
+            suppress: bool = True,
+            cls: type = Track,
+            **kwargs
+    ) -> Optional[Track]:
+        response = await self.http.search(query, limit=1, market=market or 'US')
+        try:
+            track = self.sanitize_track(response[0])
+        except IndexError:
+            if not suppress:
+                raise NoSearchMatchesFound(query)
+            return
+        return cls(id='', info=track, **kwargs)
+
+    async def _search_tracks(
+            self,
+            query: str,
+            *,
+            limit: int = 20,
+            market: Optional[str] = None,
+            suppress: bool = True,
+            cls: type = Track,
+            **kwargs
+    ) -> List[Track]:
+        response = await self.http.search(query, limit=limit, market=market or 'US')
+
+        if not response:
+            if not suppress:
+                raise NoSearchMatchesFound(query)
+            return []
+
+        return [
+            cls(
+                id='',
+                info=self.sanitize_track(track),
+                **kwargs
+            )
+            for track in response
+        ]
+
+    async def get_track_via_url(
+            self,
+            match: re.Match,
             *,
             market: str = None,
             cls: type = Track,
             **kwargs
     ) -> Union[Track, Playlist]:
-        match = self.URI_REGEX.match(query)
-
         response = None
+        if match is None:
+            return
 
-        if match is not None:
-            search_type = match.group('type')
-            spotify_id = match.group('id')
+        search_type = match.group('type')
+        spotify_id = match.group('id')
 
-            if search_type == 'album':
-                response = await self.http.get_all_album_tracks(
-                    spotify_id,
-                    market=market
-                )
-            elif search_type == 'playlist':
-                response = await self.http.get_all_playlist_tracks(
-                    spotify_id,
-                    market=market
-                )
-            elif search_type == 'artist':
-                pass  # Not implemented
-            elif search_type == 'track':
-                response = await self.http.get_track(
-                    spotify_id,
-                    market=market
-                )
-                track = self.sanitize_track(response)
-                return cls(id='', info=track, **kwargs)
+        if search_type == 'album':
+            response = await self.http.get_all_album_tracks(
+                spotify_id,
+                market=market
+            )
+        elif search_type == 'playlist':
+            response = await self.http.get_all_playlist_tracks(
+                spotify_id,
+                market=market
+            )
+        elif search_type == 'artist':
+            pass  # Not implemented
+        elif search_type == 'track':
+            response = await self.http.get_track(
+                spotify_id,
+                market=market
+            )
+            track = self.sanitize_track(response)
+            return cls(id='', info=track, **kwargs)
 
-            if search_type != 'track':
-                tracks = [
-                    self.sanitize_track(track)
-                    for track in response['items']
-                ]
+        if search_type != 'track':
+            tracks = [
+                self.sanitize_track(track)
+                for track in response['items']
+            ]
 
-                return Playlist(
-                    info=self.sanitize_playlist_info(response),
-                    tracks=tracks,
-                    cls=cls,
-                    **kwargs
-                )
+            return Playlist(
+                info=self.sanitize_playlist_info(response),
+                tracks=tracks,
+                cls=cls,
+                **kwargs
+            )
+
+    async def get_track(
+            self,
+            query: str,
+            *,
+            market: str = None,
+            suppress: bool = True,
+            cls: type = Track,
+            **kwargs
+    ) -> Union[Track, Playlist]:
+        match = self.URI_REGEX.match(query)
+        if match:
+            return await self.get_track_via_url(match, market=market, cls=cls, **kwargs)
+
+        return await self._search_track(query, market=market, suppress=suppress, cls=cls, **kwargs)
+
+    async def get_tracks(
+            self,
+            query: str,
+            *,
+            market: str = None,
+            suppress: bool = True,
+            limit: int = 20,
+            cls: type = Track,
+            **kwargs
+    ) -> Union[List[Track], Playlist]:
+        match = self.URI_REGEX.match(query)
+        if match:
+            result = await self.get_track_via_url(match, market=market, cls=cls, **kwargs)
+            if isinstance(result, Track):
+                return [result]
+            return result
+
+        return await self._search_tracks(query, limit=limit, market=market, suppress=suppress, cls=cls, **kwargs)
