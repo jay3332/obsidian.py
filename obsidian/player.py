@@ -9,9 +9,10 @@ from abc import ABC
 from discord.ext import commands
 
 from .filters import FilterSink, VolumeFilter, BaseFilter, Equalizer
+from .track import Track, Playlist
 from .events import get_cls
-from .enums import OpCode
-from .track import Track
+
+from .enums import OpCode, Source
 
 
 Bot = typing.Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
@@ -314,20 +315,39 @@ class Player:
 
         await self.__protocol.move(channel)
 
+    async def _sanitize_spotify_track(self, track: Track) -> str:
+        youtube_equivalent = await self._node.search_track(
+            f'{track.title} {track.author} audio',
+            source=Source.YOUTUBE,
+            suppress=True
+        )
+
+        if youtube_equivalent:
+            track._id = res = youtube_equivalent.id
+            return res
+
     async def play(
             self,
-            track: Track,
+            track: typing.Union[Track, Playlist],
             *,
             start_time: int = 0,
             end_time: int = 0,
             no_replace: bool = False
     ) -> None:
+        if isinstance(track, Playlist):
+            track = track.selected_track
+
+        if track.id == 'spotify':
+            _id = await self._sanitize_spotify_track(track)
+        else:
+            _id = track.id
+
         self._position = 0
         self._last_update = 0
 
         payload = {
             'guild_id': str(self._guild.id),
-            'track': str(track.id),
+            'track': str(_id),
         }
 
         if 0 < start_time < track.length:

@@ -138,7 +138,7 @@ class Playlist:
 
         self._name: str = info['name']
         self._tracks: typing.List[typing.Dict[str, typing.Any]] = tracks
-        self._selected_track: int = info['selected_track']
+        self._selected_track: int = info.get('selected_track', 0)
 
         self._uri: typing.Optional[str] = info.get('uri')
 
@@ -181,7 +181,7 @@ class Playlist:
         try:
             return self.tracks[self._selected_track]
         except IndexError:
-            return None
+            return self.tracks[0]
 
     @property
     def uri(self) -> typing.Optional[str]:

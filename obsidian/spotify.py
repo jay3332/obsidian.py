@@ -118,7 +118,7 @@ class SpotifyHTTPClient:
         kwargs = {
             'method': method,
             'url': url,
-            'headers': headers
+            'headers': _headers
         }
 
         if parameters is not None:
@@ -134,7 +134,7 @@ class SpotifyHTTPClient:
 
                 if response.status == 401:
                     token = await self._retrieve_token(generate_new=True)
-                    headers["Authorization"] = "Bearer " + token
+                    kwargs["headers"]["Authorization"] = "Bearer " + token
                     continue
 
                 if response.status == 429:
@@ -349,7 +349,7 @@ class SpotifyClient:
     """
 
     URI_REGEX: re.Pattern = re.compile(
-        r'<?http(s)?://open.spotify.com/(?P<type>album|playlist|track|artist)/(?P<id>[a-zA-Z0-9]+).*/?>?'
+        r'<?http(s)?://open.spotify.com/(?:user/[a-zA-Z0-9]+/)(?P<type>album|playlist|track|artist)/(?P<id>[a-zA-Z0-9]+).*/?>?'
     )
 
     def __init__(
@@ -416,7 +416,8 @@ class SpotifyClient:
             'is_stream': False,
             'is_seekable': False,
             'source_name': 'spotify',
-            'thumbnail': thumbnail
+            'thumbnail': thumbnail,
+            'track': 'spotify'
         }
 
     async def _search_track(
@@ -435,7 +436,7 @@ class SpotifyClient:
             if not suppress:
                 raise NoSearchMatchesFound(query)
             return
-        return cls(id='', info=track, **kwargs)
+        return cls(id='spotify', info=track, **kwargs)
 
     async def _search_tracks(
             self,
@@ -456,7 +457,7 @@ class SpotifyClient:
 
         return [
             cls(
-                id='',
+                id='spotify',
                 info=self.sanitize_track(track),
                 **kwargs
             )
@@ -496,11 +497,14 @@ class SpotifyClient:
                 market=market
             )
             track = self.sanitize_track(response)
-            return cls(id='', info=track, **kwargs)
+            return cls(id='spotify', info=track, **kwargs)
 
         if search_type != 'track':
             tracks = [
-                self.sanitize_track(track)
+                {
+                    'track': 'spotify',
+                    'info': self.sanitize_track(track)
+                }
                 for track in response['items']
             ]
 
@@ -511,7 +515,7 @@ class SpotifyClient:
                 **kwargs
             )
 
-    async def get_track(
+    async def search_track(
             self,
             query: str,
             *,
@@ -526,7 +530,7 @@ class SpotifyClient:
 
         return await self._search_track(query, market=market, suppress=suppress, cls=cls, **kwargs)
 
-    async def get_tracks(
+    async def search_tracks(
             self,
             query: str,
             *,
