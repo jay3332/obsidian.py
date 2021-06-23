@@ -20,7 +20,7 @@ This wrapper is based off of [Slate](https://github.com/Axelancerr/Slate).
 - [aiohttp](https://pypi.org/project/aiohttp/)
 ### Obsidian (v2)
 - [Java JDK 16](https://www.oracle.com/java/technologies/javase-jdk16-downloads.html)
-- [Obsidian v2](https://cdn.discordapp.com/attachments/381963689470984203/856979799733174272/Obsidian2.jar/)
+- [Obsidian v2](https://cdn.discordapp.com/attachments/381963689470984203/856979799733174272/Obsidian2.jar)
 - [obsidian.yml](https://github.com/mixtape-bot/obsidian/blob/v2/obsidian.yml/)
 
 ## Features
