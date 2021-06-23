@@ -11,7 +11,7 @@
 ----
 
 ## What is obsidian.py?
-A fully object-oriented wrapper around [Obsidian v2](https://github.com/mixtape-bot/obsidian/blob/v2/) designed for [discord.py](https://github.com/Rapptz/discord.py/).  
+A fully object-oriented wrapper around [Obsidian v2](https://github.com/mixtape-bot/obsidian/tree/v2) designed for [discord.py](https://github.com/Rapptz/discord.py/).  
 This wrapper is based off of [Slate](https://github.com/Axelancerr/Slate).
 
 ## Requirements
