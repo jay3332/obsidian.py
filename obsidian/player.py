@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+import asyncio
 import discord
 import logging
 
@@ -13,13 +14,16 @@ from .track import Track, Playlist
 from .events import get_cls
 
 from .enums import OpCode, Source
+from .queue import Queue, PointerBasedQueue, LoopType
+from .mixin import NodeListenerMixin
 
 
 Bot = Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
 
 __all__: list = [
     'Player',
-    'Protocol'
+    'Protocol',
+    'PresetPlayer'
 ]
 
 __log__: logging.Logger = logging.getLogger('obsidian.player')
@@ -437,11 +441,89 @@ class Player:
     set_eq = set_equalizer
 
 
-class PresetPlayer(Player):
-    """Basic music player with more advanced concepts, such as queues.
+class PresetPlayer(Player, NodeListenerMixin):
+    """Basic music player with many things already built and handled for you.
 
-    ...
+    Note that this class should still be inherited from in order to add required methods.
     """
 
-    def __init__(self, node, bot: Bot, guild: Union[discord.Guild, discord.Object]) -> None:
+    def __init__(
+            self,
+            node,
+            bot: Bot,
+            guild: Union[discord.Guild, discord.Object],
+            *,
+            queue_cls: type = PointerBasedQueue,
+            track_cls: type = Track,
+            wait_timeout: float = 180,
+            **kwargs
+    ) -> None:
         super().__init__(node, bot, guild)
+        self._queue: PointerBasedQueue = queue_cls()
+
+        self.ctx: Optional[commands.Context] = None
+        self._dj: Optional[discord.Member] = None
+
+        maybe_ctx = kwargs.pop('ctx', None)
+        if maybe_ctx:
+            self.ctx = maybe_ctx
+            self._dj = self.ctx.author
+
+        self.__wait_timeout: float = 180
+        self.__destroy_task: Optional[asyncio.Task] = None
+
+    async def on_obsidian_track_end(self, _player, _event) -> Any:
+        await self.do_next()
+
+    on_obsidian_track_stuck = on_obsidian_track_end
+
+    @property
+    def dj(self) -> discord.Member:
+        return self._dj
+
+    @dj.setter
+    def dj(self, new: discord.Member) -> None:
+        self._dj = new
+
+    @property
+    def queue(self) -> Queue:
+        return self._queue
+
+    @property
+    def now_playing(self) -> Track:
+        return self._queue.current
+
+    current = now_playing
+
+    async def build_embed(self, embed: discord.Embed) -> None:
+        raise NotImplementedError
+
+    def enqueue(self, track: Union[Track, Playlist]) -> None:
+        self._kill_destroy_task()
+        self._queue.add(track)
+
+    async def wait_then_destroy(self) -> None:
+        await asyncio.sleep(self.__wait_timeout)
+        await self.destroy()
+
+    def set_loop_type(self, new: LoopType) -> None:
+        self._queue.set_loop_type(new)
+
+    def _kill_destroy_task(self) -> None:
+        if self.__destroy_task is not None:
+            self.__destroy_task.cancel()
+            self.__destroy_task = None
+
+    async def __play(self, track: Track) -> Optional[Track]:
+        if not track:
+            self.__destroy_task = self.bot.loop.create_task(self.wait_then_destroy())
+
+        self._kill_destroy_task()
+        await self.play(track)
+        return track
+
+    async def do_next(self) -> Optional[Track]:
+        return await self.__play(self._queue.get())
+
+    async def skip(self) -> Optional[Track]:
+        return await self.__play(self._queue.skip())

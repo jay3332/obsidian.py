@@ -5,6 +5,10 @@
 <p align="center">
     <sup>
         A wrapper around Obsidian's REST and Websocket API.
+        <br />
+        <a href="https://pypi.org/project/obsidian.py/">
+            <b>View on PyPI</b>
+        </a>
     </sup>
 </p>
 
@@ -20,7 +24,7 @@ This wrapper is based off of [Slate](https://github.com/Axelancerr/Slate).
 - [aiohttp](https://pypi.org/project/aiohttp/)
 ### Obsidian (v2)
 - [Java JDK 16](https://www.oracle.com/java/technologies/javase-jdk16-downloads.html)
-- [Obsidian v2](https://cdn.discordapp.com/attachments/381963689470984203/856979799733174272/Obsidian2.jar/)
+- [Obsidian v2](https://cdn.discordapp.com/attachments/381963689470984203/856979799733174272/Obsidian2.jar)
 - [obsidian.yml](https://github.com/mixtape-bot/obsidian/blob/v2/obsidian.yml/)
 
 ## Features
@@ -30,6 +34,7 @@ This wrapper is based off of [Slate](https://github.com/Axelancerr/Slate).
 - Advanced audio filter support
 - Querying tracks from many sources
 - Spotify support
+- Preset classes
 - Fully typed 
 
 ## Setting up Obsidian & obsidian.py
@@ -116,3 +121,14 @@ if __name__ == '__main__':
 ## Credits
 - Heavily based off of [Slate](https://github.com/Axelancerr/Slate)
 - Inspired by [wavelink](https://github.com/PythonistaGuild/Wavelink)
+
+## Changelog
+### v0.2.0
+- Complete Spotify search support
+- Utility `Queue` and `PointerBasedQueue` classes
+- `PresetPlayer` (A `Player` with more functionality)
+- `NodeListenerMixin` mixin class
+    - Mix this class in with any class with a `node` attribute to add listeners inside of it
+    - Traditional bot listeners can still be used 
+- New filters: `KaraokeFilter`, `DistortionFilter`, `ChannelMixFilter`, and `LowPassFilter`
+- Two new factory equalizers: `jazz` and `pop`

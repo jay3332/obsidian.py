@@ -9,6 +9,14 @@ from typing import Iterable, Iterator, Optional, Union
 from .track import Track, Playlist
 
 
+__all__ = [
+    'Queue',
+    'PointerBasedQueue',
+    'LoopType',
+    'QueueFull'
+]
+
+
 class LoopType(Enum):
     NONE = 0
     TRACK = 1
@@ -185,7 +193,7 @@ class PointerBasedQueue(Queue):
 
     def __init__(
             self,
-            max_size: Optional[int],
+            max_size: Optional[int] = None,
             *,
             cls: type = deque,
             default_loop_type: LoopType = LoopType.NONE

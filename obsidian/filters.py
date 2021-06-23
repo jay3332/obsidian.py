@@ -13,7 +13,8 @@ _FILTERS = [
     'rotation',
     'low_pass',
     'tremolo',
-    'equalizer'
+    'equalizer',
+    'distortion'
 ]
 
 __all__: list = [
@@ -24,7 +25,11 @@ __all__: list = [
     'RotationFilter',
     'Equalizer',
     'VibratoFilter',
-    'TremoloFilter'
+    'TremoloFilter',
+    'KaraokeFilter',
+    'ChannelMixFilter',
+    'LowPassFilter',
+    'DistortionFilter'
 ]
 
 
@@ -77,6 +82,22 @@ class FilterSink(object):
     @property
     def tremolo(self) -> Optional[TremoloFilter]:
         return self.filters.get('tremolo')
+
+    @property
+    def distortion(self) -> Optional[DistortionFilter]:
+        return self.filters.get('distortion')
+
+    @property
+    def karaoke(self) -> Optional[KaraokeFilter]:
+        return self.filters.get('karaoke')
+
+    @property
+    def channel_mix(self) -> Optional[ChannelMixFilter]:
+        return self.filters.get('channel_mix')
+
+    @property
+    def low_pass(self) -> Optional[LowPassFilter]:
+        return self.filters.get('low_pass')
 
     def add(self, filter: BaseFilter) -> FilterSink:
         if not isinstance(filter, BaseFilter):
@@ -560,3 +581,295 @@ class TremoloFilter(VibratoFilter):
     @property
     def identifier(self) -> str:
         return 'tremolo'
+
+
+class DistortionFilter(BaseFilter):
+    def __init__(
+            self,
+            *,
+            sin_offset: int = 0,
+            sin_scale: int = 1,
+            cos_offset: int = 0,
+            cos_scale: int = 1,
+            tan_offset: int = 0,
+            tan_scale: int = 1,
+            offset: int = 0,
+            scale: int = 1
+    ):
+        self.__sin_offset: int = sin_offset
+        self.__sin_scale: int = sin_scale
+        self.__cos_offset: int = cos_offset
+        self.__cos_scale: int = cos_scale
+        self.__tan_offset: int = tan_offset
+        self.__tan_scale: int = tan_scale
+        self.__offset: int = offset
+        self.__scale: int = scale
+
+    def __repr__(self) -> str:
+        return '<DistortionFilter>'
+
+    @property
+    def scale(self) -> int:
+        return self.__scale
+
+    @scale.setter
+    def scale(self, new: int) -> None:
+        self.__scale = new
+
+    @property
+    def offset(self) -> int:
+        return self.__offset
+
+    @offset.setter
+    def offset(self, new: int) -> None:
+        self.__offset = new
+
+    @property
+    def sin_scale(self) -> int:
+        return self.__sin_scale
+
+    @sin_scale.setter
+    def sin_scale(self, new: int) -> None:
+        self.__sin_scale = new
+
+    @property
+    def sin_offset(self) -> int:
+        return self.__sin_offset
+
+    @sin_offset.setter
+    def sin_offset(self, new: int) -> None:
+        self.__sin_offset = new
+
+    @property
+    def cos_scale(self) -> int:
+        return self.__cos_scale
+
+    @cos_scale.setter
+    def cos_scale(self, new: int) -> None:
+        self.__cos_scale = new
+
+    @property
+    def cos_offset(self) -> int:
+        return self.__cos_offset
+
+    @cos_offset.setter
+    def cos_offset(self, new: int) -> None:
+        self.__cos_offset = new
+
+    @property
+    def tan_scale(self) -> int:
+        return self.__tan_scale
+
+    @tan_scale.setter
+    def tan_scale(self, new: int) -> None:
+        self.__tan_scale = new
+
+    @property
+    def tan_offset(self) -> int:
+        return self.__tan_offset
+
+    @tan_offset.setter
+    def tan_offset(self, new: int) -> None:
+        self.__tan_offset = new
+
+    @property
+    def identifier(self) -> str:
+        return 'distortion'
+
+    @classmethod
+    def from_raw(cls, data: Dict[str, int]) -> DistortionFilter:
+        data = {
+            ''.join('_' + c.lower() if c.isupper() else c for c in k).lstrip('_'): v
+            for k, v in data.items()
+        }
+        return cls(**data)
+
+    def to_raw(self) -> Dict[str, int]:
+        return {
+            'sinOffset': self.sin_offset,
+            'sinScale': self.sin_scale,
+            'cosOffset': self.cos_offset,
+            'cosScale': self.cos_scale,
+            'tanOffset': self.tan_offset,
+            'tanScale': self.tan_scale,
+            'offset': self.offset,
+            'scale': self.scale
+        }
+
+
+class KaraokeFilter(BaseFilter):
+    def __init__(
+            self,
+            level: float = 1.0,
+            mono_level: float = 1.0,
+            *,
+            filter_band: float = 220.0,
+            filter_width: float = 100.0
+    ):
+        self.__level: float = level
+        self.__mono_level: float = mono_level
+
+        self.__filter_band: float = filter_band
+        self.__filter_width: float = filter_width
+
+    def __repr__(self) -> str:
+        return f'<KaraokeFilter level={self.level:.2f}>'
+
+    @property
+    def level(self) -> float:
+        return self.__level
+
+    @level.setter
+    def level(self, new: float) -> None:
+        self.__level = new
+
+    @property
+    def mono_level(self) -> float:
+        return self.__mono_level
+
+    @mono_level.setter
+    def mono_level(self, new: float) -> None:
+        self.__mono_level = new
+
+    @property
+    def filter_band(self) -> float:
+        return self.__filter_band
+
+    @filter_band.setter
+    def filter_band(self, new: float) -> None:
+        self.__filter_band = new
+
+    @property
+    def filter_width(self) -> float:
+        return self.__filter_width
+
+    @filter_width.setter
+    def filter_width(self, new: float) -> None:
+        self.__filter_width = new
+
+    @property
+    def identifier(self) -> str:
+        return 'karaoke'
+
+    @classmethod
+    def from_raw(cls, data: Dict[str, float]) -> KaraokeFilter:
+        return cls(**data)
+
+    def to_raw(self) -> Dict[str, float]:
+        return {
+            'level': self.level,
+            'mono_level': self.mono_level,
+            'filter_band': self.filter_band,
+            'filter_width': self.filter_width
+        }
+
+
+class ChannelMixFilter(BaseFilter):
+    def __init__(
+            self,
+            *,
+            left_to_left: float = 1,
+            right_to_right: float = 1,
+            left_to_right: float = 0,
+            right_to_left: float = 0
+    ) -> None:
+        self.__left_to_left: float = None
+        self.__right_to_right: float = None
+        self.__left_to_right: float = None
+        self.__right_to_left: float = None
+
+        # Let setters handle
+        self.left_to_left = left_to_left
+        self.right_to_right = right_to_right
+        self.left_to_right = left_to_right
+        self.right_to_left = right_to_left
+
+    def __repr__(self) -> str:
+        return '<ChannelMixFilter>'
+
+    @property
+    def left_to_left(self) -> float:
+        return self.__left_to_left
+
+    @left_to_left.setter
+    def left_to_left(self, new: float) -> None:
+        if not 0 <= new <= 1:
+            raise ValueError('left_to_left value must be between 0 and 1.')
+
+        self.__left_to_left = new
+
+    @property
+    def right_to_right(self) -> float:
+        return self.__right_to_right
+
+    @right_to_right.setter
+    def right_to_right(self, new: float) -> None:
+        if not 0 <= new <= 1:
+            raise ValueError('right_to_right value must be between 0 and 1.')
+
+        self.__right_to_right = new
+
+    @property
+    def left_to_right(self) -> float:
+        return self.__left_to_right
+
+    @left_to_right.setter
+    def left_to_right(self, new: float) -> None:
+        if not 0 <= new <= 1:
+            raise ValueError('left_to_right value must be between 0 and 1.')
+
+        self.__left_to_right = new
+
+    @property
+    def right_to_left(self) -> float:
+        return self.__right_to_left
+
+    @right_to_left.setter
+    def right_to_left(self, new: float) -> None:
+        if not 0 <= new <= 1:
+            raise ValueError('right_to_left value must be between 0 and 1.')
+
+        self.__right_to_left = new
+
+    @property
+    def identifier(self) -> str:
+        return 'channel_mix'
+
+    @classmethod
+    def from_raw(cls, data: Dict[str, float]) -> ChannelMixFilter:
+        return cls(**data)
+
+    def to_raw(self) -> Dict[str, float]:
+        return {
+            'left_to_left': self.left_to_left,
+            'right_to_right': self.right_to_right,
+            'left_to_right': self.left_to_right,
+            'right_to_left': self.right_to_left
+        }
+
+
+class LowPassFilter(BaseFilter):
+    def __init__(self, smoothing: float = 20) -> None:
+        self.__smoothing: float = smoothing
+
+    def __repr__(self) -> str:
+        return f'<LowPassFilter smoothing={self.__smoothing:.1f}>'
+
+    @property
+    def smoothing(self) -> float:
+        return self.__smoothing
+
+    @smoothing.setter
+    def smoothing(self, new: float) -> None:
+        self.__smoothing = new
+
+    @property
+    def identifier(self) -> str:
+        return 'low_pass'
+
+    @classmethod
+    def from_raw(cls, data: float) -> LowPassFilter:
+        return cls(smoothing=data)
+
+    def to_raw(self) -> float:
+        return self.smoothing
