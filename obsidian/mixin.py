@@ -1,5 +1,7 @@
 import inspect
+
 from typing import Any, TYPE_CHECKING
+from functools import wraps
 
 from .events import *
 
@@ -52,6 +54,7 @@ class NodeListenerMixin:
         _node_attr_name = kwargs.pop('node', 'node')
 
         def overwrite(__init__):
+            @wraps(__init__)
             def __overwritten_init__(self, *args, **kwargs):
                 __init__(self, *args, **kwargs)
 
