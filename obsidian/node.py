@@ -133,7 +133,8 @@ class BaseNode(object):
                 session=self.__session
             )
 
-        self.__internal__ = kwargs
+        self.__internal__: typing.Dict[str, typing.Any] = kwargs
+        self.__listeners__: typing.Dict[str, typing.List[callable]] = {}
 
     def __repr__(self) -> str:
         return f'<Node identifier={self._identifier!r}>'
@@ -203,6 +204,11 @@ class BaseNode(object):
         self.loop.create_task(
             discord.utils.maybe_coroutine(self.dispatch, event, *args, **kwargs)
         )
+
+        for listener in self.__listeners__.get(event, []):
+            self.loop.create_task(
+                discord.utils.maybe_coroutine(listener, *args, **kwargs)
+            )
 
     async def handle_ws_response(self, op: OpCode, data: dict) -> None:
         raise NotImplementedError

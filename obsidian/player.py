@@ -435,3 +435,14 @@ class Player:
     reset_filter = reset_filters
     set_vol = set_volume
     set_eq = set_equalizer
+
+
+class PresetPlayer(Player):
+    """Basic music player with more advanced concepts, such as queues.
+
+    ...
+    """
+
+    def __init__(self, node, bot: Bot, guild: typing.Union[discord.Guild, discord.Object]) -> None:
+        super().__init__(node, bot, guild)
+
