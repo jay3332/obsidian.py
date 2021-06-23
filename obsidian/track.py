@@ -1,7 +1,7 @@
-import typing
 import discord
 
 from discord.ext import commands
+from typing import Any, Dict, List, Optional
 
 from .enums import Source
 
@@ -33,9 +33,9 @@ class Track:
         '_thumbnail'
     ]
 
-    def __init__(self, *, id: str, info: typing.Dict[str, typing.Any], ctx: typing.Optional[commands.Context] = None, **kwargs) -> None:
-        self._ctx: typing.Optional[commands.Context] = ctx
-        self._requester: typing.Optional[discord.Member] = kwargs.get('requester') or (ctx.author if ctx else None)
+    def __init__(self, *, id: str, info: Dict[str, Any], ctx: Optional[commands.Context] = None, **kwargs) -> None:
+        self._ctx: Optional[commands.Context] = ctx
+        self._requester: Optional[discord.Member] = kwargs.get('requester') or (ctx.author if ctx else None)
 
         self._id: str = id
         self._uri: str = info['uri']
@@ -47,7 +47,7 @@ class Track:
         self._identifier: str = info['identifier']
         self._is_seekable: bool = info['is_seekable']
         self._source: Source = Source(info['source_name'])
-        self._thumbnail: typing.Optional[str] = info.get('thumbnail')
+        self._thumbnail: Optional[str] = info.get('thumbnail')
 
     def __repr__(self) -> str:
         return f'<Track title={self._title!r} uri={self._uri!r} source={self.source!r} length={self._length}>'
@@ -57,7 +57,7 @@ class Track:
         return self._id
 
     @property
-    def ctx(self) -> typing.Optional[commands.Context]:
+    def ctx(self) -> Optional[commands.Context]:
         return self._ctx
 
     @property
@@ -107,7 +107,7 @@ class Track:
         return ''
 
     @property
-    def requester(self) -> typing.Optional[discord.Member]:
+    def requester(self) -> Optional[discord.Member]:
         return self._requester
 
     @ctx.setter
@@ -127,27 +127,27 @@ class Playlist:
     def __init__(
             self,
             *,
-            info: typing.Dict[str, typing.Any],
-            tracks: typing.List[typing.Dict[str, typing.Any]],
-            ctx: typing.Optional[commands.Context] = None,
+            info: Dict[str, Any],
+            tracks: List[Dict[str, Any]],
+            ctx: Optional[commands.Context] = None,
             cls: type = Track,
             **kwargs
     ) -> None:
-        self._ctx: typing.Optional[commands.Context] = ctx
-        self._requester: typing.Optional[discord.Member] = kwargs.get('requester') or (ctx.author if ctx else None)
+        self._ctx: Optional[commands.Context] = ctx
+        self._requester: Optional[discord.Member] = kwargs.get('requester') or (ctx.author if ctx else None)
 
         self._name: str = info['name']
-        self._tracks: typing.List[typing.Dict[str, typing.Any]] = tracks
+        self._tracks: List[Dict[str, Any]] = tracks
         self._selected_track: int = info.get('selected_track', 0)
 
-        self._uri: typing.Optional[str] = info.get('uri')
+        self._uri: Optional[str] = info.get('uri')
 
         self.__track_cls: type = cls
-        self.__constructed_tracks: typing.Optional[typing.List[Track]] = None
+        self.__constructed_tracks: Optional[List[Track]] = None
         self.__kwargs = kwargs
 
     @property
-    def __track_kwargs(self) -> typing.Dict[str, typing.Any]:
+    def __track_kwargs(self) -> Dict[str, Any]:
         return {
             **self.__kwargs,
             'requester': self._requester
@@ -158,7 +158,7 @@ class Playlist:
         return len(self._tracks)
 
     @property
-    def tracks(self) -> typing.List[Track]:
+    def tracks(self) -> List[Track]:
         if self.__constructed_tracks is not None:
             return self.__constructed_tracks
 
@@ -169,7 +169,7 @@ class Playlist:
         return res
 
     @property
-    def ctx(self) -> typing.Optional[commands.Context]:
+    def ctx(self) -> Optional[commands.Context]:
         return self._ctx
 
     @property
@@ -177,14 +177,14 @@ class Playlist:
         return self._name
 
     @property
-    def selected_track(self) -> typing.Optional[Track]:
+    def selected_track(self) -> Optional[Track]:
         try:
             return self.tracks[self._selected_track]
         except IndexError:
             return self.tracks[0]
 
     @property
-    def uri(self) -> typing.Optional[str]:
+    def uri(self) -> Optional[str]:
         return self._uri
 
     @property
@@ -195,7 +195,7 @@ class Playlist:
             return Source.YOUTUBE
 
     @property
-    def requester(self) -> typing.Optional[discord.Member]:
+    def requester(self) -> Optional[discord.Member]:
         return self._requester
 
     @requester.setter

@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import time
-import typing
 import discord
 import logging
 
 from abc import ABC
 from discord.ext import commands
+from typing import Any, Dict, List, Optional, Union
 
 from .filters import FilterSink, VolumeFilter, BaseFilter, Equalizer
 from .track import Track, Playlist
@@ -15,7 +15,7 @@ from .events import get_cls
 from .enums import OpCode, Source
 
 
-Bot = typing.Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
+Bot = Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
 
 __all__: list = [
     'Player',
@@ -45,13 +45,13 @@ class Protocol(discord.VoiceProtocol, ABC):
     def guild(self) -> discord.Guild:
         return self.player.guild
 
-    async def on_voice_server_update(self, data: typing.Dict[str, typing.Any]) -> None:
+    async def on_voice_server_update(self, data: Dict[str, Any]) -> None:
         __log__.debug(f'PLAYER | {self.guild.id} received VOICE_SERVER_UPDATE: {data}')
 
         self.player._voice_server_update_data = data
         await self.player.dispatch_voice_update()
 
-    async def on_voice_state_update(self, data: typing.Dict[str, typing.Any]) -> None:
+    async def on_voice_state_update(self, data: Dict[str, Any]) -> None:
         __log__.debug(f'PLAYER | {self.guild.id} received VOICE_STATE_UPDATE: {data}')
 
         channel_id = data.get('channel_id')
@@ -69,8 +69,8 @@ class Protocol(discord.VoiceProtocol, ABC):
     async def connect(
             self,
             *,
-            timeout: typing.Optional[float] = None,
-            reconnect: typing.Optional[bool] = None,
+            timeout: Optional[float] = None,
+            reconnect: Optional[bool] = None,
             self_deaf: bool = False
     ) -> None:
         self.__inject()
@@ -107,32 +107,32 @@ class Player:
     Represents a guild's player.
     """
 
-    def __init__(self, node, bot: Bot, guild: typing.Union[discord.Guild, discord.Object]) -> None:
+    def __init__(self, node, bot: Bot, guild: Union[discord.Guild, discord.Object]) -> None:
         from .node import BaseNode
 
         self._bot: Bot = bot
         self._node: BaseNode = node
-        self._guild: typing.Union[discord.Guild, discord.Object] = guild
-        self._channel: typing.Optional[discord.VoiceChannel] = None
+        self._guild: Union[discord.Guild, discord.Object] = guild
+        self._channel: Optional[discord.VoiceChannel] = None
 
-        self._voice_server_update_data: typing.Optional[typing.Dict[str, typing.Any]] = None
-        self._session_id: typing.Optional[str] = None
+        self._voice_server_update_data: Optional[Dict[str, Any]] = None
+        self._session_id: Optional[str] = None
 
         self._last_update: float = 0
 
-        self._frames_sent: typing.Optional[int] = None
-        self._frames_lost: typing.Optional[int] = None
+        self._frames_sent: Optional[int] = None
+        self._frames_lost: Optional[int] = None
         self._frame_data_usable: bool = True
 
-        self._last_position: typing.Optional[float] = None
-        self._current_track_id: typing.Optional[str] = None
+        self._last_position: Optional[float] = None
+        self._current_track_id: Optional[str] = None
         self._position: float = 0
         self._paused: bool = False
 
         self.__protocol: Protocol = None
         self.__sink: FilterSink = FilterSink(self)
 
-        self._current: typing.Optional[Track] = None
+        self._current: Optional[Track] = None
 
         if not isinstance(self._guild, discord.Guild):
             new = self._bot.get_guild(self._guild.id)
@@ -147,7 +147,7 @@ class Player:
         return self._bot
 
     @property
-    def guild(self) -> typing.Union[discord.Guild, discord.Object]:
+    def guild(self) -> Union[discord.Guild, discord.Object]:
         return self._guild
 
     @property
@@ -179,7 +179,7 @@ class Player:
         return self._paused
 
     @property
-    def current_track_id(self) -> typing.Optional[str]:
+    def current_track_id(self) -> Optional[str]:
         return self._current_track_id
 
     @property
@@ -202,13 +202,13 @@ class Player:
         return self.__sink.volume.percent if self.__sink.volume else 100
 
     @property
-    def equalizer(self) -> typing.Optional[Equalizer]:
+    def equalizer(self) -> Optional[Equalizer]:
         return self.__sink.equalizer
 
     eq = equalizer
 
     @property
-    def listeners(self) -> typing.List[discord.Member]:
+    def listeners(self) -> List[discord.Member]:
         if not self._channel:
             return []
 
@@ -242,7 +242,7 @@ class Player:
     def is_connected(self) -> bool:
         return self.connected
 
-    def update_state(self, data: typing.Dict[str, typing.Any]) -> None:
+    def update_state(self, data: Dict[str, Any]) -> None:
         __log__.info(f'PLAYER | {self.guild.id} updating state: {data}')
 
         self._last_update = time.time() * 1000
@@ -257,7 +257,7 @@ class Player:
         self._last_position = current_track.get('position', 0.)
         self._paused = current_track.get('paused', False)
 
-    def dispatch_event(self, data: typing.Dict[str, typing.Any]) -> None:
+    def dispatch_event(self, data: Dict[str, Any]) -> None:
         try:
             t = data['t']
         except KeyError:
@@ -283,8 +283,8 @@ class Player:
             channel: discord.VoiceChannel,
             *,
             cls: type = Protocol,
-            timeout: typing.Optional[float] = None,
-            reconnect: typing.Optional[bool] = None,
+            timeout: Optional[float] = None,
+            reconnect: Optional[bool] = None,
             self_deaf: bool = False
     ) -> Protocol:
         if not issubclass(cls, Protocol):
@@ -328,7 +328,7 @@ class Player:
 
     async def play(
             self,
-            track: typing.Union[Track, Playlist],
+            track: Union[Track, Playlist],
             *,
             start_time: int = 0,
             end_time: int = 0,
@@ -371,7 +371,7 @@ class Player:
 
         self._current = None
 
-    async def set_pause(self, pause: typing.Optional[bool] = None) -> bool:
+    async def set_pause(self, pause: Optional[bool] = None) -> bool:
         pause = pause if pause is not None else not self._paused
 
         await self._node.send(OpCode.PLAYER_PAUSE, {'guild_id': str(self._guild.id), 'state': pause})
@@ -443,6 +443,5 @@ class PresetPlayer(Player):
     ...
     """
 
-    def __init__(self, node, bot: Bot, guild: typing.Union[discord.Guild, discord.Object]) -> None:
+    def __init__(self, node, bot: Bot, guild: Union[discord.Guild, discord.Object]) -> None:
         super().__init__(node, bot, guild)
-

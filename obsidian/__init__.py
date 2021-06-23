@@ -9,6 +9,7 @@ from .search import TrackSearcher
 from .spotify import SpotifyClient
 from .stats import Stats
 from .track import Track, Playlist
+from .queue import Queue
 
 
 initiate_node = NodePool.initiate_node

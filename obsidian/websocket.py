@@ -1,9 +1,9 @@
-import typing
 import asyncio
 import aiohttp
 import logging
 
 from discord.backoff import ExponentialBackoff
+from typing import Coroutine, Dict, Optional
 
 from .enums import OpCode
 from .errors import ObsidianConnectionFailure, ObsidianAuthorizationFailure
@@ -35,7 +35,7 @@ class Websocket:
 
         self.__node: BaseNode = node
         self.__secure: bool = secure
-        self.__ws: typing.Optional[aiohttp.ClientWebSocketResponse] = None
+        self.__ws: Optional[aiohttp.ClientWebSocketResponse] = None
 
         self.__internal__ = connect_kwargs
 
@@ -48,7 +48,7 @@ class Websocket:
         return f'{ws}://{self.__node.host}:{self.__node.port}/magma'
 
     @property
-    def headers(self) -> typing.Dict[str, any]:
+    def headers(self) -> Dict[str, any]:
         return {
             'Authorization': self._password,
             'User-Id': self._bot_user_id,
@@ -115,5 +115,5 @@ class Websocket:
                     __log__.debug(f'NODE {self.__node.identifier!r} | Received payload with op-code {op!r}: {data}')
                     self._loop.create_task(self.__node.handle_ws_response(op, data['d']))
 
-    def send_str(self, data: str, compress: typing.Optional[int] = None) -> typing.Coroutine[None, None, None]:
+    def send_str(self, data: str, compress: Optional[int] = None) -> Coroutine[None, None, None]:
         return self.__ws.send_str(data, compress)

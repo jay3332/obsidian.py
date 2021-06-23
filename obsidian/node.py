@@ -1,11 +1,11 @@
 import json
-import typing
 import logging
 import discord
 import aiohttp
 import asyncio
 
 from discord.ext import commands
+from typing import Any, Dict, List, Optional, Union, overload
 
 from .stats import Stats
 from .player import Player
@@ -20,7 +20,7 @@ from .track import Track, Playlist
 from .spotify import SpotifyClient
 
 
-Bot = typing.Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
+Bot = Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
 
 __all__ = [
     'Node'
@@ -30,59 +30,59 @@ __log__: logging.Logger = logging.getLogger('obsidian.node')
 
 
 class BaseNode(object):
-    @typing.overload
+    @overload
     def __init__(
             self,
             bot: Bot,
             host: str = '127.0.0.1',
-            port: typing.Union[str, int] = '3030',
-            password: typing.Optional[str] = None,
-            identifier: typing.Optional[str] = None,
-            region: typing.Optional[discord.VoiceRegion] = None,
+            port: Union[str, int] = '3030',
+            password: Optional[str] = None,
+            identifier: Optional[str] = None,
+            region: Optional[discord.VoiceRegion] = None,
             *,
-            session: typing.Optional[aiohttp.ClientSession] = None,
-            loop: typing.Optional[asyncio.AbstractEventLoop] = None,
-            heartbeat: typing.Optional[float] = None,
-            secure: typing.Optional[bool] = None,
+            session: Optional[aiohttp.ClientSession] = None,
+            loop: Optional[asyncio.AbstractEventLoop] = None,
+            heartbeat: Optional[float] = None,
+            secure: Optional[bool] = None,
             **kwargs
     ) -> None:
         ...
 
-    @typing.overload
+    @overload
     def __init__(
             self,
             bot: Bot,
             host: str = '127.0.0.1',
-            port: typing.Union[str, int] = '3030',
-            password: typing.Optional[str] = None,
-            identifier: typing.Optional[str] = None,
-            region: typing.Optional[discord.VoiceRegion] = None,
+            port: Union[str, int] = '3030',
+            password: Optional[str] = None,
+            identifier: Optional[str] = None,
+            region: Optional[discord.VoiceRegion] = None,
             *,
-            session: typing.Optional[aiohttp.ClientSession] = None,
-            loop: typing.Optional[asyncio.AbstractEventLoop] = None,
-            heartbeat: typing.Optional[float] = None,
-            secure: typing.Optional[bool] = None,
-            spotify: typing.Optional[SpotifyClient] = None,
+            session: Optional[aiohttp.ClientSession] = None,
+            loop: Optional[asyncio.AbstractEventLoop] = None,
+            heartbeat: Optional[float] = None,
+            secure: Optional[bool] = None,
+            spotify: Optional[SpotifyClient] = None,
             **kwargs
     ) -> None:
         ...
 
-    @typing.overload
+    @overload
     def __init__(
             self,
             bot: Bot,
             host: str = '127.0.0.1',
-            port: typing.Union[str, int] = '3030',
-            password: typing.Optional[str] = None,
-            identifier: typing.Optional[str] = None,
-            region: typing.Optional[discord.VoiceRegion] = None,
+            port: Union[str, int] = '3030',
+            password: Optional[str] = None,
+            identifier: Optional[str] = None,
+            region: Optional[discord.VoiceRegion] = None,
             *,
-            session: typing.Optional[aiohttp.ClientSession] = None,
-            loop: typing.Optional[asyncio.AbstractEventLoop] = None,
-            heartbeat: typing.Optional[float] = None,
-            secure: typing.Optional[bool] = None,
-            spotify_client_id: typing.Optional[str] = None,
-            spotify_client_secret: typing.Optional[str] = None,
+            session: Optional[aiohttp.ClientSession] = None,
+            loop: Optional[asyncio.AbstractEventLoop] = None,
+            heartbeat: Optional[float] = None,
+            secure: Optional[bool] = None,
+            spotify_client_id: Optional[str] = None,
+            spotify_client_secret: Optional[str] = None,
             **kwargs
     ) -> None:
         ...
@@ -91,10 +91,10 @@ class BaseNode(object):
             self,
             bot: Bot,
             host: str = '127.0.0.1',
-            port: typing.Union[str, int] = '3030',
-            password: typing.Optional[str] = None,
-            identifier: typing.Optional[str] = None,
-            region: typing.Optional[discord.VoiceRegion] = None,
+            port: Union[str, int] = '3030',
+            password: Optional[str] = None,
+            identifier: Optional[str] = None,
+            region: Optional[discord.VoiceRegion] = None,
             **kwargs
     ) -> None:
         self._bot: Bot = bot
@@ -102,15 +102,15 @@ class BaseNode(object):
         self._port: str = str(port)
         self._password: str = password or ''
         self._identifier: str = identifier or 'MAIN'
-        self._region: typing.Optional[discord.VoiceRegion] = region
-        self._players: typing.Dict[int, Player] = {}
+        self._region: Optional[discord.VoiceRegion] = region
+        self._players: Dict[int, Player] = {}
         self._search: TrackSearcher = TrackSearcher(self)
 
-        self.__stats: typing.Optional[Stats] = None
+        self.__stats: Optional[Stats] = None
         self.__session: aiohttp.ClientSession = kwargs.get('session') or aiohttp.ClientSession()
         self.__loop: asyncio.AbstractEventLoop = kwargs.get('loop') or bot.loop
-        self.__task: typing.Optional[asyncio.Task] = None
-        self.__ws: typing.Optional[Websocket] = None
+        self.__task: Optional[asyncio.Task] = None
+        self.__ws: Optional[Websocket] = None
 
         self.__http: HTTPClient = HTTPClient(
             self.__session, self._host, self._port, self._password
@@ -120,7 +120,7 @@ class BaseNode(object):
         spotify_client_id = kwargs.get('spotify_client_id')
         spotify_client_secret = kwargs.get('spotify_client_secret')
 
-        self._spotify: typing.Optional[SpotifyClient] = None
+        self._spotify: Optional[SpotifyClient] = None
 
         if spotify:
             self._spotify = spotify
@@ -133,8 +133,8 @@ class BaseNode(object):
                 session=self.__session
             )
 
-        self.__internal__: typing.Dict[str, typing.Any] = kwargs
-        self.__listeners__: typing.Dict[str, typing.List[callable]] = {}
+        self.__internal__: Dict[str, Any] = kwargs
+        self.__listeners__: Dict[str, List[callable]] = {}
 
     def __repr__(self) -> str:
         return f'<Node identifier={self._identifier!r}>'
@@ -160,7 +160,7 @@ class BaseNode(object):
         return self._identifier
 
     @property
-    def region(self) -> typing.Optional[discord.VoiceRegion]:
+    def region(self) -> Optional[discord.VoiceRegion]:
         return self._region
 
     @property
@@ -168,11 +168,11 @@ class BaseNode(object):
         return self.__session
 
     @property
-    def players(self) -> typing.Dict[int, Player]:
+    def players(self) -> Dict[int, Player]:
         return self._players
 
     @property
-    def spotify(self) -> typing.Optional[SpotifyClient]:
+    def spotify(self) -> Optional[SpotifyClient]:
         return self._spotify
 
     @property
@@ -216,8 +216,8 @@ class BaseNode(object):
     async def connect(
             self,
             *,
-            session: typing.Optional[aiohttp.ClientSession] = None,
-            loop: typing.Optional[asyncio.AbstractEventLoop] = None
+            session: Optional[aiohttp.ClientSession] = None,
+            loop: Optional[asyncio.AbstractEventLoop] = None
     ) -> None:
         await self.bot.wait_until_ready()
 
@@ -252,7 +252,7 @@ class BaseNode(object):
 
         __log__.info(f'NODE {self.identifier!r} | Node has been destroyed.')
 
-    async def send(self, op: typing.Union[OpCode, int], data: dict) -> None:
+    async def send(self, op: Union[OpCode, int], data: dict) -> None:
         if not self.connected:
             raise NodeNotConnected(f'Node {self.identifier!r} is not connected.')
 
@@ -271,12 +271,12 @@ class BaseNode(object):
 
     def get_player(
             self,
-            guild: typing.Union[discord.Guild, discord.Object, int],
+            guild: Union[discord.Guild, discord.Object, int],
             cls: type = Player,
             must_exist: bool = False,
             *args,
             **kwargs
-    ) -> typing.Optional[Player]:
+    ) -> Optional[Player]:
         if isinstance(guild, int):
             guild = discord.Object(guild)
 
@@ -294,7 +294,7 @@ class BaseNode(object):
 
         return player
 
-    def destroy_player(self, guild: typing.Union[discord.Guild, discord.Object, int]) -> None:
+    def destroy_player(self, guild: Union[discord.Guild, discord.Object, int]) -> None:
         if isinstance(guild, int):
             guild = discord.Object(guild)
 
@@ -304,32 +304,32 @@ class BaseNode(object):
 
         self.loop.create_task(player.destroy())
 
-    @typing.overload
+    @overload
     async def search_track(
             self,
             query: str,
             *,
-            source: typing.Optional[Source] = None,
+            source: Optional[Source] = None,
             cls: type = Track,
             suppress: bool = False,
             **kwargs
-    ) -> typing.Optional[typing.Union[Track, Playlist]]:
+    ) -> Optional[Union[Track, Playlist]]:
         ...
 
     async def search_track(self, *args, **kwargs):
         return await self._search.search_track(*args, **kwargs)
 
-    @typing.overload
+    @overload
     async def search_tracks(
             self,
             query: str,
             *,
-            source: typing.Optional[Source] = None,
+            source: Optional[Source] = None,
             cls: type = Track,
             suppress: bool = True,
-            limit: typing.Optional[int] = None,
+            limit: Optional[int] = None,
             **kwargs
-    ) -> typing.Optional[typing.Union[typing.List[Track], Playlist]]:
+    ) -> Optional[Union[List[Track], Playlist]]:
         ...
 
     async def search_tracks(self, *args, **kwargs):
