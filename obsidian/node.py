@@ -14,6 +14,7 @@ from .websocket import Websocket
 from .search import TrackSearcher
 from .errors import NodeNotConnected
 
+from .mixin import NodeListenerMixin
 from .enums import OpCode, Source
 from .track import Track, Playlist
 
@@ -336,10 +337,14 @@ class BaseNode(object):
         return await self._search.search_tracks(*args, **kwargs)
 
 
-class Node(BaseNode):
+class Node(BaseNode, NodeListenerMixin):
     """
     Represents a websocket connection to Obsidian.
     """
+
+    @property
+    def node(self):
+        return self  # Relavant for NodeListenerMixin
 
     def dispatch(self, event: str, *args, **kwargs) -> None:
         self.bot.dispatch(event, *args, **kwargs)

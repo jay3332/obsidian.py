@@ -106,7 +106,7 @@ class Protocol(discord.VoiceProtocol, ABC):
         await self.player.set_pause(False)
 
 
-class Player:
+class Player(NodeListenerMixin):
     """
     Represents a guild's player.
     """
@@ -441,7 +441,7 @@ class Player:
     set_eq = set_equalizer
 
 
-class PresetPlayer(Player, NodeListenerMixin):
+class PresetPlayer(Player):
     """Basic music player with many things already built and handled for you.
 
     Note that this class should still be inherited from in order to add required methods.
