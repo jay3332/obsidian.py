@@ -94,7 +94,7 @@ class Queue(Iterable[Track]):
             return False
         return self.count >= self.max_size
 
-    def add(self, track: Union[Track, Playlist]) -> None:
+    def add(self, track: Union[Track, Playlist], *, left: bool = False) -> None:
         """Adds a Track or Playlist to the queue.
 
         If a playlist is provided, the queue will extend from it's tracks.
@@ -106,7 +106,8 @@ class Queue(Iterable[Track]):
         if self.full:
             raise QueueFull(f'Could not add track {track.title!r} because the queue was full.')
 
-        self.__queue.append(track)
+        method = self.__queue.appendleft if left else self.__queue.append
+        method(track)
 
     def set(self, index: int, new: Track) -> None:
         self.__setitem__(index, new)
