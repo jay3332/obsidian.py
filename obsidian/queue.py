@@ -37,8 +37,7 @@ class Queue(Iterable[Track]):
     ----------
     max_size: Optional[int]
         The maximum number of tracks that the queue can hold.
-
-    cls: type = collections.deque
+    cls: type, default: collections.deque
         The deque class to use for the internal queue.
     """
 
@@ -94,26 +93,45 @@ class Queue(Iterable[Track]):
 
     @property
     def internal_queue(self) -> deque:
+        """
+        The internal :class:`collections.deque` class this queue uses.
+        """
         return self.__queue
 
     @property
     def max_size(self) -> Optional[int]:
+        """
+        The max size of the queue, passed into the class constructor.
+        """
         return self.__max_size
 
     @property
     def count(self) -> int:
+        """
+        The amount of tracks currently enqueued.
+        """
         return len(self.__queue)
 
     @property
     def full(self) -> bool:
+        """
+        Whether or not this queue is full.
+        """
         if self.max_size is None:
             return False
         return self.count >= self.max_size
 
     def add(self, track: Union[Track, Playlist], *, left: bool = False) -> None:
-        """Adds a Track or Playlist to the queue.
+        """Adds a :class:`Track` or :class:`Playlist` to the queue.
 
         If a playlist is provided, the queue will extend from it's tracks.
+
+        Parameters
+        ----------
+        track: Union[:class:`Track`, :class:`Playlist`]
+            The track or playlist to add.
+        left: bool, default: False
+            Whether or not to add this track to the beginning of the queue.
         """
 
         if isinstance(track, Playlist):
@@ -126,9 +144,30 @@ class Queue(Iterable[Track]):
         method(track)
 
     def set(self, index: int, new: Track) -> None:
+        """Sets the track at the given index to the given track.
+
+        Parameters
+        ----------
+        index: int
+            The index to overwrite.
+        new: :class:`Track`
+            The track to replace with.
+        """
+
         self.__setitem__(index, new)
 
     def remove(self, track_or_index: Union[int, Track]) -> None:
+        """Removes a :class:`Track` from the queue.
+
+        If a :class:`Track` is provided, it will search and remove it, linearly.
+        If an integer is provided, it will simply remove the track at that index.
+
+        Parameters
+        ----------
+        track_or_index: Union[int, :class:`Track`]
+            The track or index of the track to remove.
+        """
+
         if isinstance(track_or_index, int):
             return self.__delitem__(track_or_index)
 
@@ -139,6 +178,16 @@ class Queue(Iterable[Track]):
 
         Note: This removes from the left, not the right unlike regular Python lists.
         This is because queues would usually work like this.
+
+        Parameters
+        ----------
+        index: int, default: 0
+            The index of the track to pop
+
+        Returns
+        -------
+        :class:`Track`
+            The track that was popped.
         """
 
         if index == 0:
@@ -152,12 +201,38 @@ class Queue(Iterable[Track]):
         return _before
 
     def get(self) -> Track:
+        """Pops and returns the next track in the queue.
+
+        Returns
+        -------
+        :class:`Track`
+            The track to play.
+        """
+
         return self.pop()
 
     def skip(self) -> Track:
+        """Skips and returns the next track in the queue.
+
+        Returns
+        -------
+        :class:`Track`
+            The next track to play.
+        """
+
         return self.get()
 
     def insert(self, index: int, track: Union[Track, Playlist]) -> None:
+        """Inserts a track at the given index.
+
+        Parameters
+        ----------
+        index: int
+            The index to insert the track at.
+        track: :class:`Track`
+            The track to insert.
+        """
+
         if isinstance(track, Playlist):
             raise TypeError(f'Playlists are not supported for insertion as of now.')
 
@@ -167,16 +242,38 @@ class Queue(Iterable[Track]):
         self.__queue.insert(index, track)
 
     def extend(self, tracks: Iterable[Union[Track, Playlist]]) -> None:
+        """Extends the queue by an iterable of :class:`Track`s.
+
+        Because this just called :meth:`Queue.add` for each track in the iterable,
+        :class:`Playlist`s will run this method recursively.
+
+        Parameters
+        ----------
+        tracks: Iterable[Union[:class:`Track`, :class:`Playlist`]]
+            An iterable of tracks to add.
+        """
+
         for track in tracks:
             self.add(track)
 
     def copy(self) -> Queue:
+        """Copies this queue and returns a new queue with the same tracks.
+
+        Returns
+        -------
+        :class:`Queue`
+            The new, copied queue.
+        """
+
         new = self.__class__(self.max_size, cls=type(self.__queue))
         new.__queue = copy(self.__queue)
 
         return new
 
     def clear(self) -> None:
+        """
+        Clears this queue and removes all tracks.
+        """
         self.__queue.clear()
 
     append = add

@@ -685,6 +685,9 @@ class PresetPlayer(Player):
 
     @property
     def dj(self) -> discord.Member:
+        """
+        The current DJ of this player.
+        """
         return self._dj
 
     @dj.setter
@@ -693,19 +696,36 @@ class PresetPlayer(Player):
 
     @property
     def queue(self) -> Queue:
+        """
+        The current :class:`PointerBasedQueue` for this player.
+        """
         return self._queue
 
     @property
     def now_playing(self) -> Track:
+        """
+        The current :class:`Track` that is playing.
+        """
         return self._queue.current
 
     @property
     def index(self) -> int:
+        """
+        The pointer index of the queue.
+        """
         return self._queue.index
 
     current = now_playing
 
     def enqueue(self, track: Union[Track, Playlist]) -> None:
+        """Enqueues a :class:`Track` or an entire :class:`Playlist`.
+
+        Parameters
+        ----------
+        track: Union[:class:`Track`, :class:`Playlist`]
+            The track or playlist to enqueue.
+        """
+
         self._kill_destroy_task()
         self._queue.add(track)
 
@@ -714,6 +734,14 @@ class PresetPlayer(Player):
         await self.destroy()
 
     def set_loop_type(self, new: LoopType) -> None:
+        """Changes the :class:`LoopType` of the queue.
+
+        Parameters
+        ----------
+        new: :class:`LoopType`
+            The new loop type to use.
+        """
+
         self._queue.set_loop_type(new)
 
     def _kill_destroy_task(self) -> None:
@@ -730,9 +758,27 @@ class PresetPlayer(Player):
         return track
 
     async def do_next(self) -> Optional[Track]:
+        """Plays the track fetched from :meth:`PointerBasedQueue.get`.
+
+        Returns
+        -------
+        Optional[:class:`Track`]
+            The track that will be played, if any.
+        """
+
         return await self.__play(self._queue.get())
 
     async def skip(self) -> Optional[Track]:
+        """Skips the current track regardless of the loop type.
+
+        This uses :meth:`PointerBasedQueue.skip`.
+
+        Returns
+        -------
+        Optional[:class:`Track`]
+            The new track to be played, if any.
+        """
+
         return await self.__play(self._queue.skip())
 
     async def build_embed(self, embed: discord.Embed) -> None:
