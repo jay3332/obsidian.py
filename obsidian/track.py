@@ -6,10 +6,10 @@ from typing import Any, Dict, List, Optional
 from .enums import Source
 
 
-__all__: list = [
+__all__: tuple = (
     'Track',
     'Playlist'
-]
+)
 
 
 class Track:
@@ -17,7 +17,7 @@ class Track:
     Represents an obsidian song track.
     """
 
-    __slots__ = [
+    __slots__: tuple = (
         '_id',
         '_ctx',
         '_requester',
@@ -31,7 +31,7 @@ class Track:
         '_is_seekable',
         '_source',
         '_thumbnail'
-    ]
+    )
 
     def __init__(self, *, id: str, info: Dict[str, Any], ctx: Optional[commands.Context] = None, **kwargs) -> None:
         self._ctx: Optional[commands.Context] = ctx
