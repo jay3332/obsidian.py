@@ -12,7 +12,7 @@ from .spotify import SpotifyClient
 
 
 __all__: tuple = (
-    'NodePool'
+    'NodePool',
 )
 
 Bot = Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
