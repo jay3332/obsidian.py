@@ -9,12 +9,12 @@ from typing import Iterable, Iterator, Optional, Union
 from .track import Track, Playlist
 
 
-__all__ = [
+__all__: tuple = (
     'Queue',
     'PointerBasedQueue',
     'LoopType',
     'QueueFull'
-]
+)
 
 
 class LoopType(Enum):
