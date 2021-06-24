@@ -9,6 +9,10 @@
         <a href="https://pypi.org/project/obsidian.py/">
             <b>View on PyPI</b>
         </a>
+        or
+        <a href="https://obsidianpy.readthedocs.io/en/latest/obsidian.html">
+            <b>Read the Docs</b>
+        </a>
     </sup>
 </p>
 
@@ -36,6 +40,9 @@ This wrapper is based off of [Slate](https://github.com/Axelancerr/Slate).
 - Spotify support
 - Preset classes
 - Fully typed 
+
+## Documentation
+You can view documentation on the core library [here](https://obsidianpy.readthedocs.io/en/latest/obsidian.html).
 
 ## Setting up Obsidian & obsidian.py
 
