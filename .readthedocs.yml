@@ -9,6 +9,6 @@ python:
   version: 3.8
   install:
     - method: pip
-      path: ./obsidian.py
+      path: .
     - method: setuptools
-      path: ./obsidian.py
+      path: .
