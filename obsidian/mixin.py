@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 __all__: tuple = (
-    'NodeListenerMixin'
+    'NodeListenerMixin',
 )
 
 
