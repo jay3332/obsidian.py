@@ -107,8 +107,19 @@ class Protocol(discord.VoiceProtocol, ABC):
 
 
 class Player(NodeListenerMixin):
-    """
-    Represents a guild's player.
+    """Represents a guild's music player.
+
+    This class is recommended to be subclassed for custom behaviors.
+    This class also inherits from :class:`NodeListenerMixin`.
+
+    Parameters
+    ----------
+    node: :class:`BaseNode`
+        The node constructing this player.
+    bot: :class:`discord.Client`
+        The bot of the corresponding node.
+    guild: Union[:class:`discord.Guild`, :class:`discord.Object`]
+        The guild that this player corresponds to.
     """
 
     def __init__(self, node, bot: Bot, guild: Union[discord.Guild, discord.Object]) -> None:
@@ -148,50 +159,86 @@ class Player(NodeListenerMixin):
 
     @property
     def bot(self) -> Bot:
+        """
+        The bot that this player uses.
+        """
         return self._bot
 
     @property
     def guild(self) -> Union[discord.Guild, discord.Object]:
+        """
+        The guild that corresponds to this player.
+        """
         return self._guild
 
     @property
     def guild_id(self) -> int:
+        """
+        The ID of the guild that corresponds to this player.
+        """
         return self._guild.id
 
     @property
     def channel(self) -> discord.VoiceChannel:
+        """
+        The :class:`discord.VoiceChannel` that this player is connected to.
+        """
         return self._channel
 
     @property
     def node(self):
+        """
+        The :class:`Node` that this player uses.
+        """
         return self._node
 
     @property
     def current(self) -> Track:
+        """
+        The current track this player is playing.
+        """
         return self._current
 
     @property
     def connected(self) -> bool:
+        """
+        Whether or not this player is connected.
+        """
         return self._channel is not None
 
     @property
     def playing(self) -> bool:
+        """
+        Whether or not this player is playing music.
+        """
         return self.connected and self._current is not None
 
     @property
     def paused(self) -> bool:
+        """
+        Whether or not this player is paused.
+        """
         return self._paused
 
     @property
     def current_track_id(self) -> Optional[str]:
+        """
+        The raw base 64 ID of the current track playing.
+        """
         return self._current_track_id
 
     @property
     def voice_client(self) -> Protocol:
+        """
+        The :class:`Protocol` this player is currently using.
+        """
         return self.__protocol
 
     @property
     def filters(self) -> FilterSink:
+        """
+        The :class:`FilterSink` of filters this player is using.
+        """
         return self.__sink
 
     @filters.setter
@@ -203,16 +250,25 @@ class Player(NodeListenerMixin):
 
     @property
     def volume(self) -> int:
+        """
+        The current volume of the music playing.
+        """
         return self.__sink.volume.percent if self.__sink.volume else 100
 
     @property
     def equalizer(self) -> Optional[Equalizer]:
+        """
+        The current equalizer of the music audio.
+        """
         return self.__sink.equalizer
 
     eq = equalizer
 
     @property
     def listeners(self) -> List[discord.Member]:
+        """
+        Returns a list of :class:`discord.Member`s in the voice channel that are undeafened.
+        """
         if not self._channel:
             return []
 
@@ -223,6 +279,10 @@ class Player(NodeListenerMixin):
 
     @property
     def position(self) -> float:
+        """The position, in milliseconds, of the current track playing.
+
+        For example, this can return `62000` if the track is 62 seconds in.
+        """
         if not self.is_playing():
             return 0
 
@@ -291,6 +351,27 @@ class Player(NodeListenerMixin):
             reconnect: Optional[bool] = None,
             self_deaf: bool = False
     ) -> Protocol:
+        """Connects to a :class:`discord.VoiceChannel`.
+
+        Parameters
+        ----------
+        channel: :class:`discord.VoiceChannel`
+            The channel to connect to.
+        cls: type, default: :class:`Protocol`
+            The connection protocol class to use.
+        timeout: float, optional
+            The timeout to use when connecting.
+        reconnect: bool, optional
+            Whether or not to reconnect.
+        self_deaf: bool, default: False
+            Whether or not to self-deafen upon connecting.
+
+        Returns
+        -------
+        :class:`Protocol`
+            The connection protocol created.
+        """
+
         if not issubclass(cls, Protocol):
             raise TypeError('Connection class must inherit from Protocol')
 
@@ -302,18 +383,42 @@ class Player(NodeListenerMixin):
         return self.__protocol
 
     async def disconnect(self, *, force: bool = False) -> None:
+        """Disconnects from the current voice connection.
+
+        Parameters
+        ----------
+        force: bool, default: False
+            Whether or not to force disconnection.
+        """
+
         if not self.__protocol or not self.connected:
             raise ValueError('No connection to disconnect from.')
 
         await self.__protocol.disconnect(force=force)
 
     async def destroy(self, *, force: bool = False) -> None:
+        """Destroys, disconnects, and deletes this player.
+
+        Parameters
+        ----------
+        force: bool, default: False
+            Whether or not to force disconnection.
+        """
+
         await self.disconnect(force=force)
         del self.node._players[self.guild_id]
 
         __log__.info(f'PLAYER | {self.guild_id} has been destroyed.')
 
     async def move(self, channel: discord.VoiceChannel) -> None:
+        """Moves the connection to another voice channel.
+
+        Parameters
+        ----------
+        channel: :class:`discord.VoiceChannel`
+            The channel to move to.
+        """
+
         if not self.__protocol or not self.connected:
             raise ValueError('No connection to move.')
 
@@ -338,6 +443,23 @@ class Player(NodeListenerMixin):
             end_time: int = 0,
             no_replace: bool = False
     ) -> None:
+        """Plays a track using this player.
+
+        If you provide a playlist, the player will play the `Playlist.selected_track`.
+
+        Parameters
+        ----------
+        track: :class:`Track`
+            The track to play.
+        start_time: int, default: 0
+            The start time offset of the track, in milliseconds.
+        end_time: int, default: 0
+            When to end the track, in milliseconds.
+        no_replace: bool, default: False
+            If set to True, this will do nothing if a track is already playing.
+            If set to False, this will overwrite the current playing track.
+        """
+
         if isinstance(track, Playlist):
             track = track.selected_track
 
@@ -367,6 +489,14 @@ class Player(NodeListenerMixin):
         self._current = track
 
     async def stop(self, *, force: bool = False) -> None:
+        """Stops the current playing track.
+
+        Parameters
+        ----------
+        force: bool, default: False
+            Whether or not to force stop the track.
+        """
+
         if not self._current and not force:
             return
 
@@ -376,6 +506,20 @@ class Player(NodeListenerMixin):
         self._current = None
 
     async def set_pause(self, pause: Optional[bool] = None) -> bool:
+        """Sets the paused state for the current track.
+
+        Parameters
+        ----------
+        pause: bool, optional
+            The new paused state.
+            If this is left as None, the new paused state will be the opposite of the current.
+
+        Returns
+        -------
+        bool
+            The new paused state (for confirmation).
+        """
+
         pause = pause if pause is not None else not self._paused
 
         await self._node.send(OpCode.PLAYER_PAUSE, {'guild_id': str(self._guild.id), 'state': pause})
@@ -385,6 +529,14 @@ class Player(NodeListenerMixin):
         return res
 
     async def set_position(self, position: float) -> None:
+        """Sets the current time position, in milliseconds, of the current playing track.
+
+        Parameters
+        ----------
+        position: float
+            The new time position, in milliseconds.
+        """
+
         if not self._current or 0 > position > self._current.length:
             return
 
@@ -395,6 +547,20 @@ class Player(NodeListenerMixin):
         self._last_update = time.time() * 1000
 
     async def set_volume(self, volume: int = 100) -> None:
+        """Sets the player volume in percent.
+
+        The volume must be at least 0 and at most 500.
+
+        .. warning::
+            It is recommended not to allow users to set the volume past 200
+            as it is then virtually earrape.
+
+        Parameters
+        ----------
+        volume: int, default: 100
+            The new volume of the player.
+        """
+
         if self.__sink.volume:
             self.__sink.volume.percent = volume
 
@@ -402,6 +568,14 @@ class Player(NodeListenerMixin):
         await self.update_filters()
 
     async def set_equalizer(self, equalizer: Equalizer) -> None:
+        """Overwrites and changes the current audio equalizer.
+
+        Parameters
+        ----------
+        equalizer: :class:`Equalizer`
+            The new equalizer to use.
+        """
+
         self.__sink.add(equalizer)
         await self.update_filters()
 
@@ -410,22 +584,54 @@ class Player(NodeListenerMixin):
         __log__.info(f'PLAYER | {self.guild.id} updated filters')
 
     async def set_filters(self, filters: FilterSink) -> None:
+        """Completely overwrites the current filter sink into a new one.
+
+        Parameters
+        ----------
+        filters: :class:`FilterSink`
+            The new filter sink to use.
+
+        See Also
+        --------
+        :meth:`Player.add_filter`:
+            Appends a new filter to the current filter sink.
+        """
+
         self.filters = filters
         await self.update_filters()
 
     async def add_filter(self, *filters: BaseFilter) -> None:
+        """Appends a new filter, or filters, to the current filter sink.
+
+        Parameters
+        ----------
+        filters: :class:`BaseFilter`
+            The filter(s) to add.
+        """
+
         for filter_ in filters:
             self.__sink.add(filter_)
 
         await self.update_filters()
 
     async def remove_filter(self, *filters) -> None:
+        """Removes a filter from the current filter sink.
+
+        Parameters
+        ----------
+        filters: :class:`BaseFilter`
+            The filter(s) to remove.
+        """
+
         for filter_ in filters:
             self.__sink.remove(filter_)
 
         await self.update_filters()
 
     async def reset_filters(self) -> None:
+        """
+        Resets the current filter sink.
+        """
         self.__sink.reset()
         await self.update_filters()
 
