@@ -26,3 +26,4 @@ You can view documentation on the core library here:
    :maxdepth: 1
 
    obsidian.rst
+   changelog.rst

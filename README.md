@@ -130,12 +130,4 @@ if __name__ == '__main__':
 - Inspired by [wavelink](https://github.com/PythonistaGuild/Wavelink)
 
 ## Changelog
-### v0.2.0
-- Complete Spotify search support
-- Utility `Queue` and `PointerBasedQueue` classes
-- `PresetPlayer` (A `Player` with more functionality)
-- `NodeListenerMixin` mixin class
-    - Mix this class in with any class with a `node` attribute to add listeners inside of it
-    - Traditional bot listeners can still be used 
-- New filters: `KaraokeFilter`, `DistortionFilter`, `ChannelMixFilter`, and `LowPassFilter`
-- Two new factory equalizers: `jazz` and `pop`
+The changelog has been moved to our [documentation page](https://obsidianpy.readthedocs.io/en/latest/changelog.html).
