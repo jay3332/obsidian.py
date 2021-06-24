@@ -43,6 +43,12 @@ setup(
         'discord.py>=1.6.0',
         'aiohttp<3.8.0,>=3.6.0'
     ],
+    extras_require={
+        'docs': [
+            'sphinx==3.5.4',
+            'numpydoc==1.1.0'
+        ]
+    },
     python_requires='>=3.7.0',
     classifiers=[
         'License :: OSI Approved :: MIT License',
