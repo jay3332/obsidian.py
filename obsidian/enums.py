@@ -3,10 +3,10 @@
 from enum import Enum
 
 
-__all__ = [
+__all__ = (
     'OpCode',
     'Source'
-]
+)
 
 
 class OpCode(Enum):
