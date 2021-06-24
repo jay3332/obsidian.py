@@ -46,7 +46,8 @@ setup(
     extras_require={
         'docs': [
             'sphinx==3.5.4',
-            'numpydoc==1.1.0'
+            'numpydoc==1.1.0',
+            'karma_sphinx_theme==0.0.8'
         ]
     },
     python_requires='>=3.7.0',
