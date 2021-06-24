@@ -4,5 +4,5 @@ sphinx:
   builder: html
 
 python:
-  version: 3.7
+  version: 3.8
   setup_py_install: true

@@ -41,7 +41,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'discord.py>=1.6.0',
-        'aiohttp>=3.6.0'
+        'aiohttp<3.8.0,>=3.6.0'
     ],
     python_requires='>=3.7.0',
     classifiers=[
