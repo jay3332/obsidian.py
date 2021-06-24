@@ -15,7 +15,7 @@ DEFAULT_MATCH_REGEX = compile(r'^<?https?://(?:www\.)?.+>?')
 SPOTIFY_MATCH_REGEX = SpotifyClient.URI_REGEX
 
 __all__: tuple = (
-    'TrackSearcher'
+    'TrackSearcher',
 )
 
 __log__ = logging.getLogger('obsidian.node')
