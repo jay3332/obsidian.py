@@ -20,11 +20,11 @@ from .mixin import NodeListenerMixin
 
 Bot = Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
 
-__all__: list = [
+__all__: tuple = (
     'Player',
     'Protocol',
     'PresetPlayer'
-]
+)
 
 __log__: logging.Logger = logging.getLogger('obsidian.player')
 
