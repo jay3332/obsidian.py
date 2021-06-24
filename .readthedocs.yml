@@ -8,6 +8,9 @@ sphinx:
 python:
   version: 3.8
   install:
+    - requirements: [
+      'numpydoc'
+    ]
     - method: pip
       path: .
     - method: setuptools
