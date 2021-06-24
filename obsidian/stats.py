@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 
 __all__: tuple = (
-    'Stats'
+    'Stats',
 )
 
 
