@@ -9,7 +9,7 @@ from .errors import HTTPError
 
 
 __all__: tuple = (
-    'HTTPClient'
+    'HTTPClient',
 )
 
 __log__: logging.Logger = logging.getLogger('obsidian.node')
