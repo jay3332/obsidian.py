@@ -9,7 +9,7 @@ python:
   version: 3.8
   install:
     - requirements: [
-      'numpydoc'
+      numpydoc
     ]
     - method: pip
       path: .
