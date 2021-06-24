@@ -1,13 +1,13 @@
 from typing import Any, Dict
 
 
-__all__ = [
+__all__: tuple = (
     'Stats'
-]
+)
 
 
 class Stats:
-    __slots__ = [
+    __slots__: tuple = (
         'heap_used_init',
         'heap_used_max',
         'heap_used_committed',
@@ -25,7 +25,7 @@ class Stats:
         'threads_total_started',
         'players_active',
         'players_total'
-    ]
+    )
 
     def __init__(self, data: Dict[str, Any]) -> None:
         memory = data.get('memory')
