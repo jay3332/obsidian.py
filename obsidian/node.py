@@ -24,7 +24,7 @@ from .spotify import SpotifyClient
 Bot = Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
 
 __all__: tuple = (
-    'Node'
+    'Node',
 )
 
 __log__: logging.Logger = logging.getLogger('obsidian.node')
