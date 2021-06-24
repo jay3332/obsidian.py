@@ -493,10 +493,11 @@ class PresetPlayer(Player):
     def now_playing(self) -> Track:
         return self._queue.current
 
-    current = now_playing
+    @property
+    def index(self) -> int:
+        return self._queue.index
 
-    async def build_embed(self, embed: discord.Embed) -> None:
-        raise NotImplementedError
+    current = now_playing
 
     def enqueue(self, track: Union[Track, Playlist]) -> None:
         self._kill_destroy_task()
@@ -527,3 +528,9 @@ class PresetPlayer(Player):
 
     async def skip(self) -> Optional[Track]:
         return await self.__play(self._queue.skip())
+
+    async def build_embed(self, embed: discord.Embed) -> None:
+        raise NotImplementedError
+
+    async def send_now_playing(self):
+        raise NotImplementedError

@@ -81,6 +81,13 @@ class NodeNotConnected(ObsidianException):
 class ObsidianConnectionFailure(ObsidianException):
     """
     Raised when connecting fails.
+
+    Attributes
+    ----------
+    node: :class:`BaseNode`
+        The node that failed to connect.
+    original: Exception
+        The exception that was raised.
     """
 
     def __init__(self, node, error: BaseException) -> None:

@@ -16,6 +16,10 @@ __all__: list = [
 
 
 class BaseEvent(object):
+    """
+    The base event class that all events inherit from.
+    """
+
     __slots__ = ['_type', '_guild_id']
 
     def __init__(self, data: Dict[str, Any]) -> None:
@@ -37,14 +41,24 @@ class BaseEvent(object):
 
     @property
     def type(self) -> EventType:
+        """
+        The type of the event.
+        """
         return self._type
 
     @property
     def guild_id(self) -> int:
+        """
+        The snowflake ID of the guild of the corresponding player this event occured in.
+        """
         return self._guild_id
 
 
 class TrackStartEvent(BaseEvent):
+    """
+    The event for when a track starts playing.
+    """
+
     __slots__ = ['_type', '_guild_id', '_track_id']
 
     def __init__(self, data: Dict[str, Any]) -> None:
@@ -56,10 +70,17 @@ class TrackStartEvent(BaseEvent):
 
     @property
     def track_id(self) -> str:
+        """
+        The raw base 64 track ID of the track that started.
+        """
         return self._track_id
 
 
 class TrackEndEvent(BaseEvent):
+    """
+    The event for when a track ends.
+    """
+
     __slots__ = ['_type', '_guild_id', '_track_id', '_reason']
 
     def __init__(self, data: Dict[str, Any]) -> None:
@@ -73,14 +94,24 @@ class TrackEndEvent(BaseEvent):
 
     @property
     def track_id(self) -> str:
+        """
+        The raw base 64 track ID of the track that ended.
+        """
         return self._track_id
 
     @property
     def reason(self) -> TrackEndReason:
+        """
+        A :class:`TrackEndReason` on why this track ended.
+        """
         return self._reason
 
 
 class TrackStuckEvent(BaseEvent):
+    """
+    The event for when a track gets stuck.
+    """
+
     __slots__ = ['_type', '_guild_id', '_track_id', '_threshold']
 
     def __init__(self, data: Dict[str, Any]) -> None:
@@ -94,18 +125,31 @@ class TrackStuckEvent(BaseEvent):
 
     @property
     def track_id(self) -> str:
+        """
+        The raw base 64 track ID of the track that got stuck.
+        """
         return self._track_id
 
     @property
     def threshold_ms(self) -> int:
+        """
+        The wait threshold that was exceeded for this event to trigger, in milliseconds.
+        """
         return self._threshold
 
     @property
     def threshold(self) -> float:
+        """
+        The wait threshold that was exceeded for this event to trigger, in seconds.
+        """
         return self._threshold / 1000
 
 
 class TrackExceptionEvent(BaseEvent):
+    """
+    Event for when Obsidian encounters an error while playing a track.
+    """
+
     __slots__ = ['_type', '_guild_id', '_track_id', '_message', '_cause', '_severity']
 
     def __init__(self, data: Dict[str, Any]) -> None:
@@ -124,22 +168,38 @@ class TrackExceptionEvent(BaseEvent):
 
     @property
     def track_id(self) -> str:
+        """
+        The raw base 64 track ID of the track.
+        """
         return self._track_id
 
     @property
     def message(self) -> str:
+        """
+        The error message provided by Obsidian.
+        """
         return self._message
 
     @property
     def cause(self) -> str:
+        """
+        The cause of the error.
+        """
         return self._cause
 
     @property
     def severity(self) -> TrackExceptionSeverity:
+        """
+        A :class:`TrackExceptionSeverity` representing the severity of this exception.
+        """
         return self._severity
 
 
 class WebsocketOpenEvent(BaseEvent):
+    """
+    Event for when Obsidian's websocket is opened.
+    """
+
     __slots__ = ['_type', '_guild_id', '_target', '_ssrc']
 
     def __init__(self, data: Dict[str, Any]) -> None:
@@ -150,6 +210,9 @@ class WebsocketOpenEvent(BaseEvent):
 
     @property
     def target(self) -> str:
+        """
+        The target IP of the websocket.
+        """
         return self._target
 
     @property
@@ -158,6 +221,10 @@ class WebsocketOpenEvent(BaseEvent):
 
 
 class WebsocketCloseEvent(BaseEvent):
+    """
+    Event for when the websocket gets closed.
+    """
+
     __slots__ = ['_type', '_guild_id', '_code', '_reason', '_by_remote']
 
     def __init__(self, data: Dict[str, Any]) -> None:
@@ -169,14 +236,23 @@ class WebsocketCloseEvent(BaseEvent):
 
     @property
     def code(self) -> int:
+        """
+        The websocket close code, provided by Discord.
+        """
         return self._code
 
     @property
     def reason(self) -> str:
+        """
+        Reason on why the websocket was closed.
+        """
         return self._reason
 
     @property
     def by_remote(self) -> bool:
+        """
+        Whether or not the websocket was closed remotely.
+        """
         return self._by_remote
 
 

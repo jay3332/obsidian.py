@@ -215,6 +215,13 @@ class PointerBasedQueue(Queue):
         self.jump(new)
 
     @property
+    def index(self) -> int:
+        """
+        The index of the current track.
+        """
+        return self.__current
+
+    @property
     def loop_type(self) -> LoopType:
         """
         The :class:`LoopType` of the queue.
