@@ -3,7 +3,7 @@ from typing import Any, Dict
 from .enums import EventType, TrackEndReason, TrackExceptionSeverity
 
 
-__all__: list = [
+__all__: tuple = (
     'BaseEvent',
     'TrackStartEvent',
     'TrackEndEvent',
@@ -12,7 +12,7 @@ __all__: list = [
     'WebsocketOpenEvent',
     'WebsocketCloseEvent',
     'get_cls'
-]
+)
 
 
 class BaseEvent(object):
@@ -20,7 +20,7 @@ class BaseEvent(object):
     The base event class that all events inherit from.
     """
 
-    __slots__ = ['_type', '_guild_id']
+    __slots__ = ('_type', '_guild_id')
 
     def __init__(self, data: Dict[str, Any]) -> None:
         try:
@@ -59,7 +59,7 @@ class TrackStartEvent(BaseEvent):
     The event for when a track starts playing.
     """
 
-    __slots__ = ['_type', '_guild_id', '_track_id']
+    __slots__ = ('_type', '_guild_id', '_track_id')
 
     def __init__(self, data: Dict[str, Any]) -> None:
         super().__init__(data)
@@ -81,7 +81,7 @@ class TrackEndEvent(BaseEvent):
     The event for when a track ends.
     """
 
-    __slots__ = ['_type', '_guild_id', '_track_id', '_reason']
+    __slots__ = ('_type', '_guild_id', '_track_id', '_reason')
 
     def __init__(self, data: Dict[str, Any]) -> None:
         super().__init__(data)
@@ -112,7 +112,7 @@ class TrackStuckEvent(BaseEvent):
     The event for when a track gets stuck.
     """
 
-    __slots__ = ['_type', '_guild_id', '_track_id', '_threshold']
+    __slots__ = ('_type', '_guild_id', '_track_id', '_threshold')
 
     def __init__(self, data: Dict[str, Any]) -> None:
         super().__init__(data)
@@ -150,7 +150,7 @@ class TrackExceptionEvent(BaseEvent):
     Event for when Obsidian encounters an error while playing a track.
     """
 
-    __slots__ = ['_type', '_guild_id', '_track_id', '_message', '_cause', '_severity']
+    __slots__ = ('_type', '_guild_id', '_track_id', '_message', '_cause', '_severity')
 
     def __init__(self, data: Dict[str, Any]) -> None:
         super().__init__(data)
@@ -200,7 +200,7 @@ class WebsocketOpenEvent(BaseEvent):
     Event for when Obsidian's websocket is opened.
     """
 
-    __slots__ = ['_type', '_guild_id', '_target', '_ssrc']
+    __slots__ = ('_type', '_guild_id', '_target', '_ssrc')
 
     def __init__(self, data: Dict[str, Any]) -> None:
         super().__init__(data)
@@ -225,7 +225,7 @@ class WebsocketCloseEvent(BaseEvent):
     Event for when the websocket gets closed.
     """
 
-    __slots__ = ['_type', '_guild_id', '_code', '_reason', '_by_remote']
+    __slots__ = ('_type', '_guild_id', '_code', '_reason', '_by_remote')
 
     def __init__(self, data: Dict[str, Any]) -> None:
         super().__init__(data)
