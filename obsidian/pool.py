@@ -11,9 +11,9 @@ from .errors import NodeAlreadyExists
 from .spotify import SpotifyClient
 
 
-__all__: list = [
-    'NodePool'
-]
+__all__: tuple = (
+    'NodePool',
+)
 
 Bot = Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
 

@@ -9,9 +9,9 @@ from .enums import OpCode
 from .errors import ObsidianConnectionFailure, ObsidianAuthorizationFailure
 
 
-__all__: list = [
-    'Websocket'
-]
+__all__: tuple = (
+    'Websocket',
+)
 
 __log__: logging.Logger = logging.getLogger('obsidian.node')
 

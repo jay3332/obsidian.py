@@ -8,9 +8,9 @@ from typing import Any, Coroutine, Dict, List, Optional
 from .errors import HTTPError
 
 
-__all__: list = [
-    'HTTPClient'
-]
+__all__: tuple = (
+    'HTTPClient',
+)
 
 __log__: logging.Logger = logging.getLogger('obsidian.node')
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 from aiohttp import ClientResponse
 
 
-__all__: list = [
+__all__: tuple = (
     'ObsidianException',
     'ObsidianSearchFailure',
     'NoSearchMatchesFound',
@@ -16,7 +16,7 @@ __all__: list = [
     'ObsidianSpotifyException',
     'SpotifyHTTPError',
     'SpotifyAuthorizationFailure'
-]
+)
 
 
 class ObsidianException(Exception):

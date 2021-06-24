@@ -4,7 +4,7 @@ from functools import wraps
 from typing import Any, Callable, Dict, List, Optional, overload
 
 
-_FILTERS = [
+_FILTERS: tuple = (
     'volume',
     'timescale',
     'karaoke',
@@ -15,9 +15,9 @@ _FILTERS = [
     'tremolo',
     'equalizer',
     'distortion'
-]
+)
 
-__all__: list = [
+__all__: tuple = (
     'FilterSink',
     'BaseFilter',
     'VolumeFilter',
@@ -30,7 +30,7 @@ __all__: list = [
     'ChannelMixFilter',
     'LowPassFilter',
     'DistortionFilter'
-]
+)
 
 
 # noinspection PyShadowingBuiltins

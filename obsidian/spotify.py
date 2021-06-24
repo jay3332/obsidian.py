@@ -17,10 +17,10 @@ from .errors import (
 )
 
 
-__all__: list = [
+__all__: tuple = (
     'SpotifyHTTPClient',
     'SpotifyClient'
-]
+)
 
 __log__: logging.Logger = logging.getLogger('obsidian.spotify')
 

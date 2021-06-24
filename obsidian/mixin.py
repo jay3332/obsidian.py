@@ -9,9 +9,9 @@ if TYPE_CHECKING:
     from .player import Player
 
 
-__all__ = [
-    'NodeListenerMixin'
-]
+__all__: tuple = (
+    'NodeListenerMixin',
+)
 
 
 class NodeListenerMixin:
@@ -41,14 +41,14 @@ class NodeListenerMixin:
     - `on_obsidian_websocket_closed`
     """
 
-    __node_listener_possible_events = [
+    __node_listener_possible_events: tuple = (
         'obsidian_track_start',
         'obsidian_track_end',
         'obsidian_track_stuck',
         'obsidian_track_exception',
         'obsidian_websocket_open',
         'obsidian_websocket_closed'
-    ]
+    )
 
     def __new__(cls, *args, **kwargs):
         _node_attr_name = kwargs.pop('node', 'node')
