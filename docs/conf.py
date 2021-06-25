@@ -32,11 +32,19 @@ release = '0.2.0'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'numpydoc'
+    'numpydoc',
+    'sphinx.ext.extlinks',
+    'sphinx.ext.intersphinx',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+
+
+intersphinx_mapping = {
+    "py": ("https://docs.python.org/3", None),
+    "dpy": ('https://discordpy.readthedocs.io/en/latest/', None),
+}
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
