@@ -35,6 +35,7 @@ extensions = [
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
     'sphinx.ext.napoleon',
+    'sphinxcontrib-asyncio'
 ]
 
 napoleon_google_docstring = False
@@ -53,6 +54,8 @@ intersphinx_mapping = {
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
+
+pygments_style = "friendly"
 
 
 # -- Options for HTML output -------------------------------------------------
