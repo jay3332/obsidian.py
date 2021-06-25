@@ -47,7 +47,7 @@ templates_path = ['_templates']
 
 rst_prolog = """
 .. |coro| replace:: This function is a |coroutine_link|_.
-.. |enum| replace:: This function is an |enum_link|_.
+.. |enum| replace:: This class is an |enum_link|_.
 .. |coroutine_link| replace:: *coroutine*
 .. |enum_link| replace:: *enum*
 .. _coroutine_link: https://docs.python.org/3/library/asyncio-task.html#coroutine

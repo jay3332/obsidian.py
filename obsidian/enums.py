@@ -5,7 +5,12 @@ from enum import Enum
 
 __all__: tuple = (
     'OpCode',
-    'Source'
+    'Source',
+    'LoadType',
+    'SearchType',
+    'EventType',
+    'TrackEndReason',
+    'TrackExceptionSeverity'
 )
 
 
