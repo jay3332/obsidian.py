@@ -1,9 +1,25 @@
 Obsidian.py Documentation
 =========================
 
+Players
+-------
+
 Player
-------
-.. automodule:: obsidian.player
+~~~~~~
+
+.. autoclass:: obsidian.Player
+    :members:
+
+PresetPlayer
+~~~~~~~~~~~~
+
+.. autoclass:: obsidian.PresetPlayer
+    :members:
+
+Protocol
+~~~~~~~~
+
+.. autoclass:: obsidian.player.Protocol
     :members:
 
 Events
@@ -12,14 +28,24 @@ Events
 .. automodule:: obsidian.events
     :members:
 
-Queue
------
+Queues
+------
 
-.. automodule:: obsidian.queue
+Utility queue classes are built into obsidian.py.
+
+Queue
+~~~~~
+
+.. autoclass:: obsidian.Queue
     :members:
 
-Errors
-------
+PointerBasedQueue
+~~~~~~~~~~~~~~~~~
+
+.. autoclass:: obsidian.PointerBasedQueue
+
+Exceptions and Errors
+---------------------
 
 .. automodule:: obsidian.errors
    :members:
