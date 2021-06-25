@@ -234,10 +234,10 @@ class Queue(Iterable[Track]):
         self.__queue.insert(index, track)
 
     def extend(self, tracks: Iterable[Union[Track, Playlist]]) -> None:
-        """Extends the queue by an iterable of :class:`Track`s.
+        """Extends the queue by an iterable of :class:`Track` .
 
         Because this just called :meth:`Queue.add` for each track in the iterable,
-        :class:`Playlist`s will run this method recursively.
+        :class:`Playlist` will run this method recursively.
 
         Parameters
         ----------
