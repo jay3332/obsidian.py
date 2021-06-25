@@ -93,7 +93,7 @@ class Queue(Iterable[Track]):
 
     @property
     def internal_queue(self) -> deque:
-        """:class:`collections.dequeue`: The internal :class:`collections.deque` class this queue uses."""
+        """:class:`collections.deque`: The internal :class:`collections.deque` class this queue uses."""
         return self.__queue
 
     @property
