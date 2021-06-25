@@ -40,6 +40,7 @@ extensions = [
 
 napoleon_google_docstring = False
 napoleon_numpy_docstring = True
+autodoc_typehints = "both"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -47,6 +48,7 @@ templates_path = ['_templates']
 
 intersphinx_mapping = {
     "py": ("https://docs.python.org/3", None),
+    "aio": ('https://docs.aiohttp.org/en/stable/', None),
     "dpy": ('https://discordpy.readthedocs.io/en/latest/', None),
 }
 
