@@ -45,6 +45,14 @@ autodoc_typehints = "both"
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
+rst_prolog = """
+.. |coro| replace:: This function is a |coroutine_link|_.
+.. |enum| replace:: This function is an |enum_link|_.
+.. |coroutine_link| replace:: *coroutine*
+.. |enum_link| replace:: *enum*
+.. _coroutine_link: https://docs.python.org/3/library/asyncio-task.html#coroutine
+.. _enum_link: https://docs.python.org/3/library/enum.html#enum.Enum
+"""
 
 intersphinx_mapping = {
     "py": ("https://docs.python.org/3", None),

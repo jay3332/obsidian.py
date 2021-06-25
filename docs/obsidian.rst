@@ -60,6 +60,12 @@ PointerBasedQueue
     :members:
     :inherited-members:
 
+Enums
+-----
+
+.. automodule:: obsidian.enums
+    :members:
+
 Exceptions and Errors
 ---------------------
 
