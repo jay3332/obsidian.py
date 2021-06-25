@@ -159,51 +159,37 @@ class Player(NodeListenerMixin):
 
     @property
     def bot(self) -> Bot:
-        """
-        The bot that this player uses.
-        """
+        """:class:`discord.Client` The bot that this player uses."""
         return self._bot
 
     @property
     def guild(self) -> Union[discord.Guild, discord.Object]:
-        """
-        The guild that corresponds to this player.
-        """
+        """Union[:class:`discord.Guild`, :class:`discord.Object`]: The guild that corresponds to this player."""
         return self._guild
 
     @property
     def guild_id(self) -> int:
-        """
-        The ID of the guild that corresponds to this player.
-        """
+        """int: The ID of the guild that corresponds to this player."""
         return self._guild.id
 
     @property
     def channel(self) -> discord.VoiceChannel:
-        """
-        The :class:`discord.VoiceChannel` that this player is connected to.
-        """
+        """:class:`discord.VoiceChannel`: The voice channel that this player is connected to."""
         return self._channel
 
     @property
     def node(self):
-        """
-        The :class:`Node` that this player uses.
-        """
+        """:class:`Node`: The node that this player uses."""
         return self._node
 
     @property
     def current(self) -> Track:
-        """
-        The current track this player is playing.
-        """
+        """:class:`Track`: The current track this player is playing."""
         return self._current
 
     @property
     def connected(self) -> bool:
-        """
-        Whether or not this player is connected.
-        """
+        """bool: Whether or not this player is connected."""
         return self._channel is not None
 
     @property
@@ -215,30 +201,22 @@ class Player(NodeListenerMixin):
 
     @property
     def paused(self) -> bool:
-        """
-        Whether or not this player is paused.
-        """
+        """bool: Whether or not this player is paused."""
         return self._paused
 
     @property
     def current_track_id(self) -> Optional[str]:
-        """
-        The raw base 64 ID of the current track playing.
-        """
+        """Optional[str]: The raw base 64 ID of the current track playing."""
         return self._current_track_id
 
     @property
     def voice_client(self) -> Protocol:
-        """
-        The :class:`Protocol` this player is currently using.
-        """
+        """:class:`Protocol`: The :class:`Protocol` this player is currently using."""
         return self.__protocol
 
     @property
     def filters(self) -> FilterSink:
-        """
-        The :class:`FilterSink` of filters this player is using.
-        """
+        """:class:`FilterSink`: The :class:`FilterSink` of filters this player is using."""
         return self.__sink
 
     @filters.setter
@@ -250,25 +228,19 @@ class Player(NodeListenerMixin):
 
     @property
     def volume(self) -> int:
-        """
-        The current volume of the music playing.
-        """
+        """int: The current volume of the music playing."""
         return self.__sink.volume.percent if self.__sink.volume else 100
 
     @property
     def equalizer(self) -> Optional[Equalizer]:
-        """
-        The current equalizer of the music audio.
-        """
+        """Optional[:class:`Equalizer`]: The current equalizer of the music audio."""
         return self.__sink.equalizer
 
     eq = equalizer
 
     @property
     def listeners(self) -> List[discord.Member]:
-        """
-        Returns a list of :class:`discord.Member`s in the voice channel that are undeafened.
-        """
+        """List[:class:`discord.Member`]: Returns a list of :class:`discord.Member`s in the voice channel that are undeafened."""
         if not self._channel:
             return []
 
@@ -279,7 +251,7 @@ class Player(NodeListenerMixin):
 
     @property
     def position(self) -> float:
-        """The position, in milliseconds, of the current track playing.
+        """float: The position, in milliseconds, of the current track playing.
 
         For example, this can return `62000` if the track is 62 seconds in.
         """
@@ -685,9 +657,7 @@ class PresetPlayer(Player):
 
     @property
     def dj(self) -> discord.Member:
-        """
-        The current DJ of this player.
-        """
+        """:class:`discord.Member`: The current DJ of this player."""
         return self._dj
 
     @dj.setter
@@ -696,23 +666,17 @@ class PresetPlayer(Player):
 
     @property
     def queue(self) -> Queue:
-        """
-        The current :class:`PointerBasedQueue` for this player.
-        """
+        """:class:`PointerBasedQueue`: The current queue for this player."""
         return self._queue
 
     @property
     def now_playing(self) -> Track:
-        """
-        The current :class:`Track` that is playing.
-        """
+        """:class:`Track`: The current track that is playing."""
         return self._queue.current
 
     @property
     def index(self) -> int:
-        """
-        The pointer index of the queue.
-        """
+        """int: The pointer index of the queue."""
         return self._queue.index
 
     current = now_playing

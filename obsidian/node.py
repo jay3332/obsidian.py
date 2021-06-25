@@ -166,62 +166,32 @@ class BaseNode(object):
 
     @property
     def bot(self) -> Bot:
-        """The :class:`discord.Client` that this node corresponds to.
-
-        Returns
-        -------
-        :class:`discord.Client`
-        """
+        """:class:`discord.Client`: The :class:`discord.Client` that this node corresponds to."""
         return self._bot
 
     @property
     def host(self) -> str:
-        """The IP of the host of Obsidian.
-
-        Returns
-        -------
-        str
-        """
+        """str: The IP of the host of Obsidian."""
         return self._host
 
     @property
     def port(self) -> str:
-        """The port of the host of Obsidian.
-
-        Returns
-        -------
-        str
-        """
+        """str: The port of the host of Obsidian."""
         return self._port
 
     @property
     def password(self) -> str:
-        """The password needed to connect to Obsidian.
-
-        Returns
-        -------
-        str
-        """
+        """str: The password needed to connect to Obsidian."""
         return self._password
 
     @property
     def identifier(self) -> str:
-        """The identifier for this node, specified in the constructor.
-
-        Returns
-        -------
-        str
-        """
+        """str: The identifier for this node, specified in the constructor."""
         return self._identifier
 
     @property
     def region(self) -> Optional[discord.VoiceRegion]:
-        """The voice region for this node, specified in the constructor.
-
-        Returns
-        -------
-        :clas:`discord.VoiceRegion`
-        """
+        """:class:`discord.VoiceRegion`: The voice region for this node, specified in the constructor."""
         return self._region
 
     @property
@@ -250,22 +220,12 @@ class BaseNode(object):
 
     @property
     def stats(self) -> Stats:
-        """The statistics for this node returned by the websocket.
-
-        Returns
-        -------
-        :class:`Stats`
-        """
+        """:class:`Stats` The statistics for this node returned by the websocket."""
         return self.__stats
 
     @property
     def connected(self) -> bool:
-        """Whether or not this node is connected.
-
-        Returns
-        -------
-        bool
-        """
+        """bool: Whether or not this node is connected."""
 
         if not self.__ws:
             return False

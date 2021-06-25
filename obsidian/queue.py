@@ -93,30 +93,22 @@ class Queue(Iterable[Track]):
 
     @property
     def internal_queue(self) -> deque:
-        """
-        The internal :class:`collections.deque` class this queue uses.
-        """
+        """:class:`collections.dequeue`: The internal :class:`collections.deque` class this queue uses."""
         return self.__queue
 
     @property
     def max_size(self) -> Optional[int]:
-        """
-        The max size of the queue, passed into the class constructor.
-        """
+        """Optional[int]: The max size of the queue, passed into the class constructor."""
         return self.__max_size
 
     @property
     def count(self) -> int:
-        """
-        The amount of tracks currently enqueued.
-        """
+        """int: The amount of tracks currently enqueued."""
         return len(self.__queue)
 
     @property
     def full(self) -> bool:
-        """
-        Whether or not this queue is full.
-        """
+        """bool: Whether or not this queue is full."""
         if self.max_size is None:
             return False
         return self.count >= self.max_size
@@ -302,9 +294,7 @@ class PointerBasedQueue(Queue):
 
     @property
     def current(self) -> Track:
-        """
-        The current track the queue is pointing to.
-        """
+        """:class:`Track`: The current track the queue is pointing to."""
         return self[self.__current]
 
     @current.setter
@@ -313,16 +303,12 @@ class PointerBasedQueue(Queue):
 
     @property
     def index(self) -> int:
-        """
-        The index of the current track.
-        """
+        """int: The index of the current track."""
         return self.__current
 
     @property
     def loop_type(self) -> LoopType:
-        """
-        The :class:`LoopType` of the queue.
-        """
+        """:class:`LoopType`: The :class:`LoopType` of the queue."""
         return self.__loop_type
 
     @loop_type.setter
