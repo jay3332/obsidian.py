@@ -84,7 +84,7 @@ class ObsidianConnectionFailure(ObsidianException):
 
     Attributes
     ----------
-    node: :class:`BaseNode`
+    node: :class:`.BaseNode`
         The node that failed to connect.
     original: Exception
         The exception that was raised.

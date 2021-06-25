@@ -102,7 +102,7 @@ class TrackEndEvent(BaseEvent):
     @property
     def reason(self) -> TrackEndReason:
         """
-        A :class:`TrackEndReason` on why this track ended.
+        A :class:`.TrackEndReason` on why this track ended.
         """
         return self._reason
 
@@ -190,7 +190,7 @@ class TrackExceptionEvent(BaseEvent):
     @property
     def severity(self) -> TrackExceptionSeverity:
         """
-        A :class:`TrackExceptionSeverity` representing the severity of this exception.
+        A :class:`.TrackExceptionSeverity` representing the severity of this exception.
         """
         return self._severity
 

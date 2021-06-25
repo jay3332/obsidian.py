@@ -114,13 +114,13 @@ class Queue(Iterable[Track]):
         return self.count >= self.max_size
 
     def add(self, track: Union[Track, Playlist], *, left: bool = False) -> None:
-        """Adds a :class:`Track` or :class:`Playlist` to the queue.
+        """Adds a :class:`.Track` or :class:`.Playlist` to the queue.
 
         If a playlist is provided, the queue will extend from it's tracks.
 
         Parameters
         ----------
-        track: Union[:class:`Track`, :class:`Playlist`]
+        track: Union[:class:`.Track`, :class:`.Playlist`]
             The track or playlist to add.
         left: bool, default: False
             Whether or not to add this track to the beginning of the queue.
@@ -142,21 +142,21 @@ class Queue(Iterable[Track]):
         ----------
         index: int
             The index to overwrite.
-        new: :class:`Track`
+        new: :class:`.Track`
             The track to replace with.
         """
 
         self.__setitem__(index, new)
 
     def remove(self, track_or_index: Union[int, Track]) -> None:
-        """Removes a :class:`Track` from the queue.
+        """Removes a :class:`.Track` from the queue.
 
-        If a :class:`Track` is provided, it will search and remove it, linearly.
+        If a :class:`.Track` is provided, it will search and remove it, linearly.
         If an integer is provided, it will simply remove the track at that index.
 
         Parameters
         ----------
-        track_or_index: Union[int, :class:`Track`]
+        track_or_index: Union[int, :class:`.Track`]
             The track or index of the track to remove.
         """
 
@@ -178,7 +178,7 @@ class Queue(Iterable[Track]):
 
         Returns
         -------
-        :class:`Track`
+        :class:`.Track`
             The track that was popped.
         """
 
@@ -197,7 +197,7 @@ class Queue(Iterable[Track]):
 
         Returns
         -------
-        :class:`Track`
+        :class:`.Track`
             The track to play.
         """
 
@@ -208,7 +208,7 @@ class Queue(Iterable[Track]):
 
         Returns
         -------
-        :class:`Track`
+        :class:`.Track`
             The next track to play.
         """
 
@@ -221,7 +221,7 @@ class Queue(Iterable[Track]):
         ----------
         index: int
             The index to insert the track at.
-        track: :class:`Track`
+        track: :class:`.Track`
             The track to insert.
         """
 
@@ -234,14 +234,14 @@ class Queue(Iterable[Track]):
         self.__queue.insert(index, track)
 
     def extend(self, tracks: Iterable[Union[Track, Playlist]]) -> None:
-        """Extends the queue by an iterable of :class:`Track` .
+        """Extends the queue by an iterable of :class:`.Track` .
 
         Because this just called :meth:`Queue.add` for each track in the iterable,
-        :class:`Playlist` will run this method recursively.
+        :class:`.Playlist` will run this method recursively.
 
         Parameters
         ----------
-        tracks: Iterable[Union[:class:`Track`, :class:`Playlist`]]
+        tracks: Iterable[Union[:class:`.Track`, :class:`.Playlist`]]
             An iterable of tracks to add.
         """
 
@@ -294,7 +294,7 @@ class PointerBasedQueue(Queue):
 
     @property
     def current(self) -> Track:
-        """:class:`Track`: The current track the queue is pointing to."""
+        """:class:`.Track`: The current track the queue is pointing to."""
         return self[self.__current]
 
     @current.setter
@@ -308,7 +308,7 @@ class PointerBasedQueue(Queue):
 
     @property
     def loop_type(self) -> LoopType:
-        """:class:`LoopType`: The :class:`LoopType` of the queue."""
+        """:class:`Queue`: The :class:`Queue` of the queue."""
         return self.__loop_type
 
     @loop_type.setter
@@ -318,10 +318,10 @@ class PointerBasedQueue(Queue):
     def get(self) -> Optional[Track]:
         """Retrieves the next track in the queue.
 
-        If the :class:`LoopType` is NONE and the queue has been exhausted,
+        If the :class:`Queue` is NONE and the queue has been exhausted,
         this will return `None` instead.
 
-        If the :class:`LoopType` is TRACK, this will return the same track playing.
+        If the :class:`Queue` is TRACK, this will return the same track playing.
         See :meth:`PointerBasedQueue.skip` to skip the current track.
         """
 

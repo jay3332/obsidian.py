@@ -220,7 +220,7 @@ class BaseNode(object):
 
     @property
     def stats(self) -> Stats:
-        """:class:`Stats` The statistics for this node returned by the websocket."""
+        """:class:`.Stats` The statistics for this node returned by the websocket."""
         return self.__stats
 
     @property
@@ -317,7 +317,7 @@ class BaseNode(object):
 
         Parameters
         ----------
-        op: Union[:class:`OpCode`, int]
+        op: Union[:class:`.OpCode`, int]
             The Op-Code of the request.
         data: Dict[str, Any]
             The JSON payload to send.
@@ -347,13 +347,13 @@ class BaseNode(object):
             *args,
             **kwargs
     ) -> Optional[Player]:
-        """Gets an existing :class:`Player`, or if not found, creates it.
+        """Gets an existing :class:`.Player`, or if not found, creates it.
 
         Parameters
         ----------
         guild: Union[:class:`discord.Guild`, :class:`discord.Object`, int]
             The guild that this player corresponds to.
-        cls: type, default: :class:`Player`
+        cls: type, default: :class:`.Player`
             The class to cast the player to.
         must_exist: bool, default: False
             Whether or not to return `None` if the player doesn't already exist.
@@ -364,7 +364,7 @@ class BaseNode(object):
 
         Returns
         -------
-        :class:`Player`
+        :class:`.Player`
             The player found, or if it didn't exist, created.
         """
 
@@ -425,7 +425,7 @@ class BaseNode(object):
         ----------
         query: str
             The search query or URL.
-        source: Optional[:class:`Source`]
+        source: Optional[:class:`.Source`]
             The source that the track should come from.
         cls: type, default: :class:`Track`
             The class to cast the track to.
@@ -434,7 +434,7 @@ class BaseNode(object):
 
         Returns
         -------
-        Optional[Union[:class:`Track`, :class:`Playlist`]]
+        Optional[Union[:class:`.Track`, :class:`.Playlist`]]
             The track or playlist that was found, if any.
         """
 
@@ -466,9 +466,9 @@ class BaseNode(object):
         ----------
         query: str
             The search query or URL.
-        source: Optional[:class:`Source`]
+        source: Optional[:class:`.Source`]
             The source that the tracks should come from.
-        cls: type, default: :class:`Track`
+        cls: type, default: :class:`.Track`
             The class to cast the tracks to.
         suppress: bool, default: False
             Whether or not to suppress :exc:`.NoSearchMatchesFound`
@@ -477,7 +477,7 @@ class BaseNode(object):
 
         Returns
         -------
-        Union[List[:class:`Track`], :class:`Playlist`]
+        Union[List[:class:`.Track`], :class:`.Playlist`]
             A list of tracks found, or a playlist.
         """
 
