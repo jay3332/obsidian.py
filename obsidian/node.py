@@ -430,7 +430,7 @@ class BaseNode(object):
         cls: type, default: :class:`Track`
             The class to cast the track to.
         suppress: bool, default: False
-            Whether or not to suppress :class:`NoSearchMatchesFound`
+            Whether or not to suppress :exc:`NoSearchMatchesFound`
 
         Returns
         -------
@@ -471,7 +471,7 @@ class BaseNode(object):
         cls: type, default: :class:`Track`
             The class to cast the tracks to.
         suppress: bool, default: False
-            Whether or not to suppress :class:`NoSearchMatchesFound`
+            Whether or not to suppress :exc:`NoSearchMatchesFound`
         limit: Optional[int]
             The maximum amount of tracks to return.
 
