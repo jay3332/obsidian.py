@@ -45,9 +45,9 @@ setup(
     ],
     extras_require={
         'docs': [
-            'sphinx==3.5.4',
-            'karma_sphinx_theme==0.0.8',
-            'sphinxcontrib-asyncio==0.3.0'
+            'sphinx>=4.0.2',
+            'karma_sphinx_theme>=0.0.8',
+            'sphinxcontrib-asyncio>=0.3.0'
         ]
     },
     python_requires='>=3.7.0',
