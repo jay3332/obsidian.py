@@ -244,7 +244,7 @@ class Player(NodeListenerMixin):
     @filters.setter
     def filters(self, sink: FilterSink) -> None:
         if not isinstance(sink, FilterSink):
-            raise TypeError('Filter sinks must inherit from FitlerSink.')
+            raise TypeError('Filter sinks must inherit from FilterSink.')
 
         self.__sink = sink
 
