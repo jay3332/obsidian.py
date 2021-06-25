@@ -19,6 +19,7 @@ from .enums import OpCode, Source
 from .track import Track, Playlist
 
 from .spotify import SpotifyClient
+from .helpers import DocInheritanceMeta
 
 
 Bot = Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
@@ -30,7 +31,31 @@ __all__: tuple = (
 __log__: logging.Logger = logging.getLogger('obsidian.node')
 
 
-class BaseNode(object):
+class BaseNode(object, metaclass=DocInheritanceMeta):
+    """Represents the base class for all nodes.
+
+    You should use :class:`Node` instead.
+
+    Parameters
+    ----------
+    bot: :class:`discord.Client`
+        The client or bot that this node belongs to.
+    host: str
+        The IP of the host that Obsidian is running on.
+    port: str
+        The port of the host that Obsidian is running on.
+    password: Optional[str]
+        The password needed to connect to Obsidian.
+    identifier: Optional[str]
+        The name to use to refer to this node. Defaults to `'MAIN'`
+    region: Optional[:class:`discord.VoiceRegion`]
+        The voice region this node will be in.
+
+    See Also
+    --------
+    :class:`Node`
+    """
+
     @overload
     def __init__(
             self,
@@ -142,26 +167,62 @@ class BaseNode(object):
 
     @property
     def bot(self) -> Bot:
+        """The :class:`discord.Client` that this node corresponds to.
+
+        Returns
+        -------
+        :class:`discord.Client`
+        """
         return self._bot
 
     @property
     def host(self) -> str:
+        """The IP of the host of Obsidian.
+
+        Returns
+        -------
+        str
+        """
         return self._host
 
     @property
     def port(self) -> str:
+        """The port of the host of Obsidian.
+
+        Returns
+        -------
+        str
+        """
         return self._port
 
     @property
     def password(self) -> str:
+        """The password needed to connect to Obsidian.
+
+        Returns
+        -------
+        str
+        """
         return self._password
 
     @property
     def identifier(self) -> str:
+        """The identifier for this node, specified in the constructor.
+
+        Returns
+        -------
+        str
+        """
         return self._identifier
 
     @property
     def region(self) -> Optional[discord.VoiceRegion]:
+        """The voice region for this node, specified in the constructor.
+
+        Returns
+        -------
+        :clas:`discord.VoiceRegion`
+        """
         return self._region
 
     @property
@@ -190,10 +251,23 @@ class BaseNode(object):
 
     @property
     def stats(self) -> Stats:
+        """The statistics for this node returned by the websocket.
+
+        Returns
+        -------
+        :class:`Stats`
+        """
         return self.__stats
 
     @property
     def connected(self) -> bool:
+        """Whether or not this node is connected.
+
+        Returns
+        -------
+        bool
+        """
+
         if not self.__ws:
             return False
         return self.__ws.connected
@@ -220,6 +294,16 @@ class BaseNode(object):
             session: Optional[aiohttp.ClientSession] = None,
             loop: Optional[asyncio.AbstractEventLoop] = None
     ) -> None:
+        """Establishes a websocket connection for this node.
+
+        Parameters
+        ----------
+        session: Optional[:class:`aiohttp.ClientSession`]
+            The session to use when connecting.
+        loop: Optional[:class:`asyncio.AbstractEventLoop`]
+            The event loop to use when connecting.
+        """
+
         await self.bot.wait_until_ready()
 
         connect_kwargs = {
@@ -231,6 +315,14 @@ class BaseNode(object):
         await self.ws.connect()
 
     async def disconnect(self, *, force: bool = False) -> None:
+        """Disconnects the current websocket connection for this node.
+
+        Parameters
+        ----------
+        force: bool, default: False
+            Whether or not to force disconnection.
+        """
+
         if self.connected:
             await self.ws.disconnect()
 
@@ -246,6 +338,14 @@ class BaseNode(object):
         __log__.info(f'NODE {self.identifier!r} | Node disconnected.')
 
     async def destroy(self, *, force: bool = False) -> None:
+        """Disconnects, deletes, and destroys this node.
+
+        Parameters
+        ----------
+        force: bool, default: False
+            Whether or not to force disconnection.
+        """
+
         from .pool import NodePool
 
         await self.disconnect(force=force)
@@ -254,6 +354,16 @@ class BaseNode(object):
         __log__.info(f'NODE {self.identifier!r} | Node has been destroyed.')
 
     async def send(self, op: Union[OpCode, int], data: dict) -> None:
+        """Sends a message to the Obsidian websocket.
+
+        Parameters
+        ----------
+        op: Union[:class:`OpCode`, int]
+            The Op-Code of the request.
+        data: Dict[str, Any]
+            The JSON payload to send.
+        """
+
         if not self.connected:
             raise NodeNotConnected(f'Node {self.identifier!r} is not connected.')
 
@@ -278,6 +388,27 @@ class BaseNode(object):
             *args,
             **kwargs
     ) -> Optional[Player]:
+        """Gets an existing :class:`Player`, or if not found, creates it.
+
+        Parameters
+        ----------
+        guild: Union[:class:`discord.Guild`, :class:`discord.Object`, int]
+            The guild that this player corresponds to.
+        cls: type, default: :class:`Player`
+            The class to cast the player to.
+        must_exist: bool, default: False
+            Whether or not to return `None` if the player doesn't already exist.
+        args
+            Extra arguments to pass into the class constructor.
+        kwargs
+            Extra keyword arguments to pass into the class constructor.
+
+        Returns
+        -------
+        :class:`Player`
+            The player found, or if it didn't exist, created.
+        """
+
         if isinstance(guild, int):
             guild = discord.Object(guild)
 
@@ -296,6 +427,14 @@ class BaseNode(object):
         return player
 
     def destroy_player(self, guild: Union[discord.Guild, discord.Object, int]) -> None:
+        """Destroys and deletes a player.
+
+        Parameters
+        ----------
+        guild: Union[:class:`discord.Guild`, :class:`discord.Object`, int]
+            The player's corresponding guild.
+        """
+
         if isinstance(guild, int):
             guild = discord.Object(guild)
 
@@ -318,6 +457,28 @@ class BaseNode(object):
         ...
 
     async def search_track(self, *args, **kwargs):
+        """Searches for one single track given a query or URL.
+
+        .. warning::
+            If the track is a direct URL, the `source` kwarg will be ignored.
+
+        Parameters
+        ----------
+        query: str
+            The search query or URL.
+        source: Optional[:class:`Source`]
+            The source that the track should come from.
+        cls: type, default: :class:`Track`
+            The class to cast the track to.
+        suppress: bool, default: False
+            Whether or not to suppress :class:`NoSearchMatchesFound`
+
+        Returns
+        -------
+        Optional[Union[:class:`Track`, :class:`Playlist`]]
+            The track or playlist that was found, if any.
+        """
+
         return await self._search.search_track(*args, **kwargs)
 
     @overload
@@ -334,12 +495,53 @@ class BaseNode(object):
         ...
 
     async def search_tracks(self, *args, **kwargs):
+        """Searches for multiple tracks given a query or URL.
+
+        .. warning::
+            If the track is a direct URL, the `source` kwarg will be ignored.
+
+        .. warning::
+            If a playlist is found, the return type will not be a list, rather just the playlist itself.
+
+        Parameters
+        ----------
+        query: str
+            The search query or URL.
+        source: Optional[:class:`Source`]
+            The source that the tracks should come from.
+        cls: type, default: :class:`Track`
+            The class to cast the tracks to.
+        suppress: bool, default: False
+            Whether or not to suppress :class:`NoSearchMatchesFound`
+        limit: Optional[int]
+            The maximum amount of tracks to return.
+
+        Returns
+        -------
+        Union[List[:class:`Track`], :class:`Playlist`]
+            A list of tracks found, or a playlist.
+        """
+
         return await self._search.search_tracks(*args, **kwargs)
 
 
 class Node(BaseNode, NodeListenerMixin):
-    """
-    Represents a websocket connection to Obsidian.
+    """Represents a connection to Obsidian that manages requests and websockets.
+
+    Parameters
+    ----------
+    bot: :class:`discord.Client`
+        The client or bot that this node belongs to.
+    host: str
+        The IP of the host that Obsidian is running on.
+    port: str
+        The port of the host that Obsidian is running on.
+    password: Optional[str]
+        The password needed to connect to Obsidian.
+    identifier: Optional[str]
+        The name to use to refer to this node. Defaults to `'MAIN'`
+    region: Optional[:class:`discord.VoiceRegion`]
+        The voice region this node will be in.
     """
 
     @property
