@@ -1,6 +1,15 @@
 Obsidian.py Documentation
 =========================
 
+Node
+----
+
+Node
+~~~~
+
+.. autoclass:: obsidian.Node
+    :members:
+
 Players
 -------
 
