@@ -240,7 +240,7 @@ class Player(NodeListenerMixin):
 
     @property
     def listeners(self) -> List[discord.Member]:
-        """List[:class:`discord.Member`]: Returns a list of :class:`discord.Member`s in the voice channel that are undeafened."""
+        """List[:class:`discord.Member`]: Returns a list of :class:`discord.Member` in the voice channel that are undeafened."""
         if not self._channel:
             return []
 
