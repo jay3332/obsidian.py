@@ -110,11 +110,11 @@ class Player(NodeListenerMixin):
     """Represents a guild's music player.
 
     This class is recommended to be subclassed for custom behaviors.
-    This class also inherits from :class:`NodeListenerMixin`.
+    This class also inherits from :class:`.NodeListenerMixin`.
 
     Parameters
     ----------
-    node: :class:`BaseNode`
+    node: :class:`.BaseNode`
         The node constructing this player.
     bot: :class:`discord.Client`
         The bot of the corresponding node.
@@ -179,12 +179,12 @@ class Player(NodeListenerMixin):
 
     @property
     def node(self):
-        """:class:`Node`: The node that this player uses."""
+        """:class:`.Node`: The node that this player uses."""
         return self._node
 
     @property
     def current(self) -> Track:
-        """:class:`Track`: The current track this player is playing."""
+        """:class:`.Track`: The current track this player is playing."""
         return self._current
 
     @property
@@ -211,12 +211,12 @@ class Player(NodeListenerMixin):
 
     @property
     def voice_client(self) -> Protocol:
-        """:class:`Protocol`: The :class:`Protocol` this player is currently using."""
+        """:class:`.Protocol`: The :class:`.Protocol` this player is currently using."""
         return self.__protocol
 
     @property
     def filters(self) -> FilterSink:
-        """:class:`FilterSink`: The :class:`FilterSink` of filters this player is using."""
+        """:class:`.FilterSink`: The :class:`.FilterSink` of filters this player is using."""
         return self.__sink
 
     @filters.setter
@@ -233,7 +233,7 @@ class Player(NodeListenerMixin):
 
     @property
     def equalizer(self) -> Optional[Equalizer]:
-        """Optional[:class:`Equalizer`]: The current equalizer of the music audio."""
+        """Optional[:class:`.Equalizer`]: The current equalizer of the music audio."""
         return self.__sink.equalizer
 
     eq = equalizer
@@ -329,7 +329,7 @@ class Player(NodeListenerMixin):
         ----------
         channel: :class:`discord.VoiceChannel`
             The channel to connect to.
-        cls: type, default: :class:`Protocol`
+        cls: type, default: :class:`.Protocol`
             The connection protocol class to use.
         timeout: float, optional
             The timeout to use when connecting.
@@ -340,7 +340,7 @@ class Player(NodeListenerMixin):
 
         Returns
         -------
-        :class:`Protocol`
+        :class:`.Protocol`
             The connection protocol created.
         """
 
@@ -421,7 +421,7 @@ class Player(NodeListenerMixin):
 
         Parameters
         ----------
-        track: :class:`Track`
+        track: :class:`.Track`
             The track to play.
         start_time: int, default: 0
             The start time offset of the track, in milliseconds.
@@ -544,7 +544,7 @@ class Player(NodeListenerMixin):
 
         Parameters
         ----------
-        equalizer: :class:`Equalizer`
+        equalizer: :class:`.Equalizer`
             The new equalizer to use.
         """
 
@@ -560,7 +560,7 @@ class Player(NodeListenerMixin):
 
         Parameters
         ----------
-        filters: :class:`FilterSink`
+        filters: :class:`.FilterSink`
             The new filter sink to use.
 
         See Also
@@ -577,7 +577,7 @@ class Player(NodeListenerMixin):
 
         Parameters
         ----------
-        filters: :class:`BaseFilter`
+        filters: :class:`.BaseFilter`
             The filter(s) to add.
         """
 
@@ -591,7 +591,7 @@ class Player(NodeListenerMixin):
 
         Parameters
         ----------
-        filters: :class:`BaseFilter`
+        filters: :class:`.BaseFilter`
             The filter(s) to remove.
         """
 
@@ -666,12 +666,12 @@ class PresetPlayer(Player):
 
     @property
     def queue(self) -> Queue:
-        """:class:`PointerBasedQueue`: The current queue for this player."""
+        """:class:`.PointerBasedQueue`: The current queue for this player."""
         return self._queue
 
     @property
     def now_playing(self) -> Track:
-        """:class:`Track`: The current track that is playing."""
+        """:class:`.Track`: The current track that is playing."""
         return self._queue.current
 
     @property
@@ -682,11 +682,11 @@ class PresetPlayer(Player):
     current = now_playing
 
     def enqueue(self, track: Union[Track, Playlist]) -> None:
-        """Enqueues a :class:`Track` or an entire :class:`Playlist`.
+        """Enqueues a :class:`.Track` or an entire :class:`.Playlist`.
 
         Parameters
         ----------
-        track: Union[:class:`Track`, :class:`Playlist`]
+        track: Union[:class:`.Track`, :class:`.Playlist`]
             The track or playlist to enqueue.
         """
 
@@ -698,11 +698,11 @@ class PresetPlayer(Player):
         await self.destroy()
 
     def set_loop_type(self, new: LoopType) -> None:
-        """Changes the :class:`LoopType` of the queue.
+        """Changes the :class:`.LoopType` of the queue.
 
         Parameters
         ----------
-        new: :class:`LoopType`
+        new: :class:`.LoopType`
             The new loop type to use.
         """
 
@@ -726,7 +726,7 @@ class PresetPlayer(Player):
 
         Returns
         -------
-        Optional[:class:`Track`]
+        Optional[:class:`.Track`]
             The track that will be played, if any.
         """
 
@@ -739,7 +739,7 @@ class PresetPlayer(Player):
 
         Returns
         -------
-        Optional[:class:`Track`]
+        Optional[:class:`.Track`]
             The new track to be played, if any.
         """
 
