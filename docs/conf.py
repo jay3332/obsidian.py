@@ -75,6 +75,8 @@ pygments_style = "friendly"
 #
 html_theme = 'karma_sphinx_theme'
 
+needs_sphinx = "3.5.4"
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".

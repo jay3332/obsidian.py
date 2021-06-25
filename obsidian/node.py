@@ -427,7 +427,7 @@ class BaseNode(object):
             The search query or URL.
         source: Optional[:class:`.Source`]
             The source that the track should come from.
-        cls: type, default: :class:`Track`
+        cls: type, default: :class:`.Track`
             The class to cast the track to.
         suppress: bool, default: False
             Whether or not to suppress :exc:`.NoSearchMatchesFound`
