@@ -54,6 +54,8 @@ intersphinx_mapping = {
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+pygments_style = "friendly"
+
 
 # -- Options for HTML output -------------------------------------------------
 
