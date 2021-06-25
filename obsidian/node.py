@@ -19,7 +19,6 @@ from .enums import OpCode, Source
 from .track import Track, Playlist
 
 from .spotify import SpotifyClient
-from .helpers import DocInheritanceMeta
 
 
 Bot = Union[discord.Client, discord.AutoShardedClient, commands.Bot, commands.AutoShardedBot]
@@ -31,7 +30,7 @@ __all__: tuple = (
 __log__: logging.Logger = logging.getLogger('obsidian.node')
 
 
-class BaseNode(object, metaclass=DocInheritanceMeta):
+class BaseNode(object):
     """Represents the base class for all nodes.
 
     You should use :class:`Node` instead.

@@ -9,6 +9,10 @@ Node
 
 .. autoclass:: obsidian.Node
     :members:
+    :inherited-members:
+
+.. autoclass:: obsidian.BaseNode
+    :members:
 
 Players
 -------
@@ -24,6 +28,7 @@ PresetPlayer
 
 .. autoclass:: obsidian.PresetPlayer
     :members:
+    :inherited-members:
 
 Protocol
 ~~~~~~~~
@@ -52,9 +57,11 @@ PointerBasedQueue
 ~~~~~~~~~~~~~~~~~
 
 .. autoclass:: obsidian.PointerBasedQueue
+    :members:
+    :inherited-members:
 
 Exceptions and Errors
 ---------------------
 
 .. automodule:: obsidian.errors
-   :members:
+    :members:
