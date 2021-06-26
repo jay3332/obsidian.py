@@ -156,6 +156,7 @@ Enums
 
 .. automodule:: obsidian.enums
     :members:
+    :exclude-members: OpCode, SearchType
 
 Stats
 -----
