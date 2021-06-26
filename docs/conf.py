@@ -76,6 +76,15 @@ pygments_style = "friendly"
 #
 html_theme = 'nervproject'
 
+html_theme_options = {
+    "social": [
+    ],
+    "license": {
+        'type': 'MIT',
+        'url': 'https://raw.githubusercontent.com/jay3332/obsidian.py/master/LICENSE'
+    }
+}
+
 
 
 # Add any paths that contain custom static files (such as style sheets) here,
