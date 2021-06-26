@@ -50,7 +50,7 @@ Playlist
     :members:
 
 Filters
-------
+-------
 
 FilterSink
 ~~~~~~~~~~
@@ -121,7 +121,7 @@ ChannelMixFilter
     :inherited-members:
 
 LowPassFilter
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 .. autoclass:: obsidian.LowPassFilter
     :members:
