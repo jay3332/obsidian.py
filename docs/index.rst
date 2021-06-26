@@ -35,6 +35,12 @@ A wrapper around Obsidian's REST and Websocket API.
    obsidian.rst
    changelog.rst
 
+.. toctree::
+   :maxdepth: 2
+   :caption: You can view documentation on the extensio here:
+   
+   ext/spotify.rst
+
 Index and Search
 ================
 * :ref:`genindex`
