@@ -79,7 +79,7 @@ class Track:
     @property
     def ctx(self) -> Optional[commands.Context]:
         """
-        Optional[:class:`commands.Context`]: The :class:`commands.Context` 
+        Optional[:class:`~discord.ext.commands.Context`]: The :class:`~discord.ext.commands.Context` 
         that invoked the track. Could be `None` .
         """
         return self._ctx
@@ -240,7 +240,7 @@ class Playlist:
     @property
     def ctx(self) -> Optional[commands.Context]:
         """
-        Optional[:class:`commands.Context`]: The :class:`commands.Context` 
+        Optional[:class:`~discord.ext.commands.Context`]: The :class:`~discord.ext.commands.Context` 
         that invoked the playlist. Could be `None` .
         """
         return self._ctx
@@ -272,7 +272,7 @@ class Playlist:
     @property
     def source(self) -> Source:
         """
-        :class:`Source`: Return an |enum_link| indicates the type of the :class:`.Source` .
+        :class:`.Source`: Return an |enum_link| indicates the type of the :class:`.Source` .
         """
         try:
             return self.tracks[0].source
