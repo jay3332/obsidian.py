@@ -24,6 +24,7 @@ You can view documentation on the core library here:
 
 .. toctree::
    :maxdepth: 2
-
+   
+   quickstart.rst
    obsidian.rst
    changelog.rst
