@@ -65,6 +65,9 @@ class Track:
 
     @property
     def ctx(self) -> Optional[commands.Context]:
+        """
+        The :class:`commands.Context` that invoked the track. Could be `None` .
+        """
         return self._ctx
 
     @property
@@ -152,6 +155,9 @@ class Track:
 
     @ctx.setter
     def ctx(self, ctx: commands.Context) -> None:
+        """
+        A utility `function` for changing the :attr:`ctx` .
+        """
         self._ctx = ctx
 
     @requester.setter
