@@ -181,7 +181,7 @@ class TrackEndReason(Enum):
 class TrackExceptionSeverity(Enum):
     """|enum|
 
-    Represents a severity rating for the exception from :class:`TrackExceptionEvent`.
+    Represents a severity rating for the exception from :exc:`TrackExceptionEvent`.
 
     Attributes
     ----------
