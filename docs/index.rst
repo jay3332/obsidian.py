@@ -23,7 +23,7 @@ A wrapper around Obsidian's REST and Websocket API.
 You can view documentation on the core library here:
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    obsidian.rst
    changelog.rst
