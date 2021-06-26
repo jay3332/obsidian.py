@@ -37,7 +37,7 @@ A wrapper around Obsidian's REST and Websocket API.
 
 .. toctree::
    :maxdepth: 2
-   :caption: You can view documentation on the extensio here:
+   :caption: You can view documentation on the extension here:
    
    ext/spotify.rst
 
