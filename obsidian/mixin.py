@@ -20,7 +20,7 @@ class NodeListenerMixin:
     All listeners begin with `on_obsidian_...`, e.g. `on_obsidian_track_end`,
     and all listeners should follow the signature `(player: Player, event: BaseEvent) -> Any`
 
-    All listeners must be asynchronous.
+    All listeners must be a |coroutine_link|.
 
     To add a listener, just add a function with it's name being the listener name.
 

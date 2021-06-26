@@ -10,9 +10,10 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
 
 
 # -- Project information -----------------------------------------------------
@@ -43,7 +44,7 @@ napoleon_numpy_docstring = True
 autodoc_typehints = "both"
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = []
 
 rst_prolog = """
 .. |coro| replace:: This function is a |coroutine_link|_.
@@ -73,11 +74,20 @@ pygments_style = "friendly"
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'karma_sphinx_theme'
+html_theme = 'nervproject'
 
-needs_sphinx = "3.5.4"
+html_theme_options = {
+    "social": [
+    ],
+    "license": {
+        'type': 'MIT',
+        'url': 'https://raw.githubusercontent.com/jay3332/obsidian.py/master/LICENSE'
+    }
+}
+
+
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = []
