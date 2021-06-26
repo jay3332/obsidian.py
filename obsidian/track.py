@@ -15,6 +15,19 @@ __all__: tuple = (
 class Track:
     """
     Represents an obsidian song track.
+    
+    Parameters
+    ----------
+    id: str
+        The base 64 track ID.
+    info: Dict[str, Any]
+        The raw JSON payload returned by Obsidian,
+        containing information about this track.
+    ctx: Optional[:class:`commands.Context`]
+        An optional context to use for this track.  
+        By default, if this is provided, :attr:`Track.requester` will be the author of the context.
+    kwargs
+        Extra keyword arguments to pass into the constructor.
     """
 
     __slots__: tuple = (
@@ -55,7 +68,7 @@ class Track:
     @property
     def id(self) -> str:
         """
-        The Base64 Track ID, can be used to rebuild track objects.
+        str: The Base64 Track ID, can be used to rebuild track objects.
 
         See Also
         --------
@@ -66,77 +79,78 @@ class Track:
     @property
     def ctx(self) -> Optional[commands.Context]:
         """
-        The :class:`commands.Context` that invoked the track. Could be `None` .
+        Optional[:class:`commands.Context`]: The :class:`commands.Context` 
+        that invoked the track. Could be `None` .
         """
         return self._ctx
 
     @property
     def title(self) -> str:
         """
-        The track title.
+        str: The track title.
         """
         return self._title
 
     @property
     def author(self) -> str:
         """
-        The author of the track.
+        str: The author of the track.
         """
         return self._author
 
     @property
     def uri(self) -> str:
         """
-        The track's URI.
+        str: The track's URI.
         """
         return self._uri
 
     @property
     def identifier(self) -> str:
         """
-        The tracks identifier.
+        str: The tracks identifier.
         """
         return self._identifier
 
     @property
     def length(self) -> int:
         """
-        The duration of the track in seconds.
+        int: The duration of the track in seconds.
         """
         return self._length
 
     @property
     def position(self) -> int:
         """
-        The current position of the track in seconds.
+        int: The current position of the track in seconds.
         """
         return self._position
 
     @property
     def stream(self) -> bool:
         """
-        Whether the track is a stream or not.
+        bool: Whether the track is a stream or not.
         """
         return self._is_stream
 
     @property
     def seekable(self) -> bool:
         """
-        If you are able to seek the track's position or not.
+        bool: If you are able to seek the track's position or not.
         """
         return self._is_seekable
 
     @property
     def source(self) -> Source:
         """
-        Return an |enum_link| indicates the type of the :class:`.Source` .
+        :class:`Source`: Return an |enum_link| indicates the type of the :class:`.Source` .
         """
         return self._source
 
     @property
     def thumbnail(self) -> str:
         """
-        Return the image URL of the track's thumbnail, could be an empty :class:`str` depending on the :class:`.Source` .
+        str: Return the image URL of the track's thumbnail, could be an empty :class:`str` depending on the :class:`.Source` .
         """
         if self.source is Source.YOUTUBE:
             return f'https://img.youtube.com/vi/{self.identifier}/hqdefault.jpg'
@@ -149,21 +163,21 @@ class Track:
     @property
     def requester(self) -> Optional[discord.Member]:
         """
-        The :class:`discord.Member` that requested the track.
+        Optional[:class:`discord.Member`]: The :class:`discord.Member` that requested the track.
         """
         return self._requester
 
     @ctx.setter
     def ctx(self, ctx: commands.Context) -> None:
         """
-        A utility `function` for changing the :attr:`ctx` .
+        A utility `function` for changing the :attr:`ctx`.
         """
         self._ctx = ctx
 
     @requester.setter
     def requester(self, requester: discord.Member) -> None:
         """
-        A utility `function` for changing the :attr:`requester` .
+        A utility `function` for changing the :attr:`requester`.
         """
         self._requester = requester
 
