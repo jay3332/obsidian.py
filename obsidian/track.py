@@ -136,7 +136,7 @@ class Track:
     @property
     def thumbnail(self) -> str:
         """
-        Return the image URL of the track's thumbnail, could be an empty :class:`string` depending on the :class:`.source` .
+        Return the image URL of the track's thumbnail, could be an empty :class:`str` depending on the :class:`.Source` .
         """
         if self.source is Source.YOUTUBE:
             return f'https://img.youtube.com/vi/{self.identifier}/hqdefault.jpg'
