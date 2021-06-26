@@ -18,6 +18,13 @@ A wrapper around Obsidian's REST and Websocket API.
 - Preset classes
 - Fully typed
 
+Help and Support
+================
+For help and support, join our `support server`_.
+
+.. _support server: https://discord.gg/s64kkbZJN2
+
+
 
 .. toctree::
    :maxdepth: 1
