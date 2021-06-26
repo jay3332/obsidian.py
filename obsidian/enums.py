@@ -15,6 +15,11 @@ __all__: tuple = (
 
 
 class OpCode(Enum):
+    """|enum|
+
+    An internal enumeration used when sending messages over the websocket.
+    """
+
     SUBMIT_VOICE_UPDATE = 0
     STATS = 1
 
@@ -113,6 +118,11 @@ class LoadType(Enum):
 
 
 class SearchType(Enum):
+    """|enum|
+
+    A legacy enumeration that is kept to prevent breaking changes.
+    """
+
     TRACK = 'track'
     PLAYLIST = 'playlist'
     ALBUM = 'album'
