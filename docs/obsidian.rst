@@ -41,12 +41,12 @@ Tracks
 
 Track
 ~~~~~
-.. autoclass:: obsidian.track.Track
+.. autoclass:: obsidian.Track
     :members:
 
 Playlist
 ~~~~~~~~
-.. autoclass:: obsidian.track.Playlist
+.. autoclass:: obsidian.Playlist
     :members:
 
 
