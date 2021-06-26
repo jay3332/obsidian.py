@@ -18,13 +18,25 @@ A wrapper around Obsidian's REST and Websocket API.
 - Preset classes
 - Fully typed
 
-**Obsidian documentation**
 
-You can view documentation on the core library here:
+.. toctree::
+   :maxdepth: 1
+   :caption: Getting Started:
+   quickstart.rst
+
+
+**Obsidian documentation**
 
 .. toctree::
    :maxdepth: 2
+   :caption: You can view documentation on the core library here:
    
    quickstart.rst
    obsidian.rst
    changelog.rst
+
+Index and Search
+================
+* :ref:`genindex`
+* :ref:`search`
+
