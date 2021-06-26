@@ -12,6 +12,11 @@ if TYPE_CHECKING:
 __all__: tuple = (
     'NodeListenerMixin',
 )
+    
+try:
+    removeprefix = str.removeprefix
+except AttributeError:
+    removeprefix = lambda s, prefix: s[len(prefix):] if s.startswith(prefix) else s
 
 
 class NodeListenerMixin:
@@ -65,8 +70,10 @@ class NodeListenerMixin:
 
                 def predicate(func):
                     try:
-                        return func.__name__.startswith('on_') and func.__name__.removeprefix(
-                            'on_') in cls.__node_listener_possible_events
+                        return func.__name__.startswith('on_') and removeprefix(
+                            func.__name__,
+                            'on_'
+                        ) in cls.__node_listener_possible_events
                     except AttributeError:
                         return False
 
