@@ -52,11 +52,80 @@ Playlist
 Filters
 ------
 
-.. automodule:: obsidian.filters
+FilterSink
+~~~~~~~~~~
+
+.. autoclass:: obsidian.FilterSink
+    :members:
+
+BaseFilter
+~~~~~~~~~~
+
+.. autoclass:: obsidian.BaseFilter
+    :members:
+
+VolumeFilter
+~~~~~~~~~~~~
+
+.. autoclass:: obsidian.VolumeFilter
     :members:
     :inherited-members:
-    :undoc-members:
-    
+
+TimescaleFilter
+~~~~~~~~~~~~~~~
+
+.. autoclass:: obsidian.TimescaleFilter
+    :members:
+    :inherited-members:
+
+RotationFilter
+~~~~~~~~~~~~~~
+
+.. autoclass:: obsidian.RotationFilter
+    :members:
+    :inherited-members:
+
+Equalizer
+~~~~~~~~~
+
+.. autoclass:: obsidian.Equalizer
+    :members:
+    :inherited-members:
+
+VibratoFilter
+~~~~~~~~~~~~~
+
+.. autoclass:: obsidian.VibratoFilter
+    :members:
+    :inherited-members:
+
+TremoloFilter
+~~~~~~~~~~~~~
+
+.. autoclass:: obsidian.TremoloFilter
+    :members:
+    :inherited-members:
+
+KaraokeFilter
+~~~~~~~~~~~~~
+
+.. autoclass:: obsidian.KaraokeFilter
+    :members:
+    :inherited-members:
+
+ChannelMixFilter
+~~~~~~~~~~~~~~~~
+
+.. autoclass:: obsidian.ChannelMixFilter
+    :members:
+    :inherited-members:
+
+LowPassFilter
+~~~~~~~~~~~~
+
+.. autoclass:: obsidian.LowPassFilter
+    :members:
+    :inherited-members:
 
 Events
 ------
