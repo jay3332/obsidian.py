@@ -9,14 +9,14 @@ A wrapper around Obsidian's REST and Websocket API.
 
 **Features**
 
-- Fully asynchronous
-- Object oriented
-- Playlist support
-- Advanced audio filter support
-- Querying tracks from many sources
-- Spotify support
-- Preset classes
-- Fully typed
+* Fully asynchronous
+* Object oriented
+* Playlist support
+* Advanced audio filter support
+* Querying tracks from many sources
+* Spotify support
+* Preset classes
+* Fully typed
 
 Help and Support
 ================
