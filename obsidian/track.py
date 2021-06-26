@@ -218,10 +218,16 @@ class Playlist:
 
     @property
     def count(self) -> int:
+        """
+        int: Return the total amount of tracks in the playlist.
+        """
         return len(self._tracks)
 
     @property
     def tracks(self) -> List[Track]:
+        """
+        List[Track]: Return a `list` of :class:`Track` s.
+        """
         if self.__constructed_tracks is not None:
             return self.__constructed_tracks
 
@@ -233,14 +239,24 @@ class Playlist:
 
     @property
     def ctx(self) -> Optional[commands.Context]:
+        """
+        Optional[:class:`commands.Context`]: The :class:`commands.Context` 
+        that invoked the playlist. Could be `None` .
+        """
         return self._ctx
 
     @property
     def name(self) -> str:
+        """
+        str: The name of the playlist.
+        """
         return self._name
 
     @property
     def selected_track(self) -> Optional[Track]:
+        """
+        The selected track returned by Obsidian, could be `None` .
+        """
         try:
             return self.tracks[self._selected_track]
         except IndexError:
@@ -248,10 +264,16 @@ class Playlist:
 
     @property
     def uri(self) -> Optional[str]:
+        """
+        str: The playlist's URI.
+        """
         return self._uri
 
     @property
     def source(self) -> Source:
+        """
+        :class:`Source`: Return an |enum_link| indicates the type of the :class:`.Source` .
+        """
         try:
             return self.tracks[0].source
         except (IndexError, KeyError):
@@ -259,14 +281,23 @@ class Playlist:
 
     @property
     def requester(self) -> Optional[discord.Member]:
+        """
+        Optional[:class:`discord.Member`]: The :class:`discord.Member` that requested the playlist.
+        """
         return self._requester
 
     @requester.setter
     def requester(self, requester: discord.Member) -> None:
+        """
+        A utility `function` for changing the :attr:`requester`.
+        """
         self._requester = requester
 
     @ctx.setter
     def ctx(self, ctx: commands.Context) -> None:
+        """
+        A utility `function` for changing the :attr:`ctx`.
+        """
         self._ctx = ctx
 
     def __iter__(self) -> iter:
