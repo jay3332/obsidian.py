@@ -49,6 +49,14 @@ Playlist
 .. autoclass:: obsidian.Playlist
     :members:
 
+Filters
+------
+
+.. automodule:: obsidian.filters
+    :members:
+    :inherited-members:
+    :undoc-members:
+    
 
 Events
 ------
