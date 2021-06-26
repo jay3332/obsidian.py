@@ -80,6 +80,12 @@ Enums
 .. automodule:: obsidian.enums
     :members:
 
+Stats
+-----
+
+.. autoclass:: obsidian.Stats
+    :members:
+
 Exceptions and Errors
 ---------------------
 
