@@ -168,7 +168,7 @@ class TrackEndReason(Enum):
 
     See Also
     --------
-    :class:`TrackEndEvent`
+    :class:`.TrackEndEvent`
     """
 
     STOPPED = 'STOPPED'
@@ -181,7 +181,7 @@ class TrackEndReason(Enum):
 class TrackExceptionSeverity(Enum):
     """|enum|
 
-    Represents a severity rating for the exception from :exc:`TrackExceptionEvent`.
+    Represents a severity rating for the exception from :exc:`.TrackExceptionEvent`.
 
     Attributes
     ----------
