@@ -85,6 +85,7 @@ Stats
 
 .. autoclass:: obsidian.Stats
     :members:
+    :undoc-members:
 
 Exceptions and Errors
 ---------------------
