@@ -35,3 +35,31 @@ If you already have a connected node with a :class:`.SpotifyClient`, you can use
         ...
         spotify=other_node.spotify
     )
+
+Making use of Spotify support
+-----------------------------
+
+Once you've enabled support for Spotify, simply start searching your tracks
+with the ``source`` kwarg set to :attr:`Source.SPOTIFY`:
+
+.. code-block:: python
+
+    await node.search_track('My song', source=obsidian.Source.SPOTIFY)
+
+You can also create fallbacks *to* spotify, like so:
+
+.. code-block:: python
+
+    query = 'My song'
+
+    try:
+        track = await node.search_track(
+            query,
+            source=obsidian.Source.SPOTIFY,
+            suppress=False
+        )
+    except obsidian.NoSearchMatchesFound:
+        track = await node.search_track(
+            query,
+            source=obsidian.Source.YOUTUBE
+        )
