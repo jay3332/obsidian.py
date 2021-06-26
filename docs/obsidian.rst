@@ -35,6 +35,12 @@ Protocol
 
 .. autoclass:: obsidian.player.Protocol
     :members:
+    
+Track
+-----
+
+.. autoclass:: obsidian.track.Track
+    :members:
 
 Events
 ------
