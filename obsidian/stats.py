@@ -7,6 +7,9 @@ __all__: tuple = (
 
 
 class Stats:
+    """
+    Stats of a Obsidian node.
+    """
     __slots__: tuple = (
         'heap_used_init',
         'heap_used_max',
