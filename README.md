@@ -32,6 +32,7 @@ This wrapper is based off of [Slate](https://github.com/Axelancerr/Slate).
 - [obsidian.yml](https://github.com/mixtape-bot/obsidian/blob/v2/obsidian.yml/)
 
 ## Features
+- 100% coverage
 - Fully asynchronous
 - Object oriented
 - Playlist support

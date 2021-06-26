@@ -403,6 +403,59 @@ class BaseNode(object):
 
         self.loop.create_task(player.destroy())
 
+    async def decode_track(self, id: str, /, *, cls: type = Track, **kwargs) -> Optional[Track]:
+        """|coro|
+
+        Decodes a track given it's Base 64 ID.
+
+        Parameters
+        ----------
+        id: str
+            The track's ID, usually represented in Base 64.
+        cls: type, default: :class:`Track`
+            The class to cast the track to.
+        kwargs
+            Extra keyword arguments to pass into the class constructor.
+
+        Returns
+        -------
+        Optional[:class:`Track`]
+            The decoded track, if any.
+
+        See Also
+        --------
+        :meth:`Node.decode_tracks`
+        """
+
+        return cls(id=id, info=await self.http.decode_track(id), **kwargs)
+
+    async def decode_tracks(self, ids: str, /, *, cls: type = Track, **kwargs) -> Optional[List[Track]]:
+        """|coro|
+
+        Decodes multiple tracks, given their Base 64 ID's.
+
+        Parameters
+        ----------
+        ids: List[str]
+            A list of base 64 track ID's to decode.
+        cls: type, default: :class:`Track`
+            The class to cast the tracks to.
+        kwargs
+            Extra keyword arguments to pass into the class constructor.
+
+        Returns
+        -------
+        Optional[List[:class:`Track`]]
+            A list of constructed tracks, if any.
+
+        See Also
+        --------
+        :meth:`Node.decode_track`
+        """
+
+        tracks = await self.http.decode_tracks(ids)
+        return [cls(id=id_, info=track, **kwargs) for id_, track in zip(ids, tracks['tracks'])]
+
     @overload
     async def search_track(
             self,
