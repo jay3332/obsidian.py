@@ -22,6 +22,7 @@ A wrapper around Obsidian's REST and Websocket API.
 .. toctree::
    :maxdepth: 1
    :caption: Getting Started:
+
    quickstart.rst
 
 
@@ -30,6 +31,7 @@ A wrapper around Obsidian's REST and Websocket API.
 .. toctree::
    :maxdepth: 2
    :caption: You can view documentation on the core library here:
+
    obsidian.rst
    changelog.rst
 
