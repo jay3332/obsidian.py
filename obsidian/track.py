@@ -54,6 +54,13 @@ class Track:
 
     @property
     def id(self) -> str:
+        """
+        The Base64 Track ID, can be used to rebuild track objects.
+
+        See Also
+        --------
+        :meth:`.Node.decode_track`
+        """
         return self._id
 
     @property
@@ -62,42 +69,72 @@ class Track:
 
     @property
     def title(self) -> str:
+        """
+        The track title.
+        """
         return self._title
 
     @property
     def author(self) -> str:
+        """
+        The author of the track.
+        """
         return self._author
 
     @property
     def uri(self) -> str:
+        """
+        The track's URI.
+        """
         return self._uri
 
     @property
     def identifier(self) -> str:
+        """
+        The tracks identifier.
+        """
         return self._identifier
 
     @property
     def length(self) -> int:
+        """
+        The duration of the track in seconds.
+        """
         return self._length
 
     @property
     def position(self) -> int:
+        """
+        The current position of the track in seconds.
+        """
         return self._position
 
     @property
     def stream(self) -> bool:
+        """
+        Whether the track is a stream or not.
+        """
         return self._is_stream
 
     @property
     def seekable(self) -> bool:
+        """
+        If you are able to seek the track's position or not.
+        """
         return self._is_seekable
 
     @property
     def source(self) -> Source:
+        """
+        Return an |enum_link| indicates the type of the :class:`.Source` .
+        """
         return self._source
 
     @property
     def thumbnail(self) -> str:
+        """
+        Return the image URL of the track's thumbnail, could be an empty :class:`string` depending on the :class:`.source` .
+        """
         if self.source is Source.YOUTUBE:
             return f'https://img.youtube.com/vi/{self.identifier}/hqdefault.jpg'
 
@@ -108,6 +145,9 @@ class Track:
 
     @property
     def requester(self) -> Optional[discord.Member]:
+        """
+        The :class:`discord.Member` that requested the track.
+        """
         return self._requester
 
     @ctx.setter
@@ -116,6 +156,9 @@ class Track:
 
     @requester.setter
     def requester(self, requester: discord.Member) -> None:
+        """
+        A utility `function` for changing the :attr:`requester` .
+        """
         self._requester = requester
 
 
