@@ -524,6 +524,7 @@ class SpotifyClient:
             cls: type = Track,
             **kwargs
     ) -> Union[Track, Playlist]:
+        market = market or 'US'
         match = self.URI_REGEX.match(query)
         if match:
             return await self.get_track_via_url(match, market=market, cls=cls, **kwargs)
@@ -540,6 +541,7 @@ class SpotifyClient:
             cls: type = Track,
             **kwargs
     ) -> Union[List[Track], Playlist]:
+        market = market or 'US'
         match = self.URI_REGEX.match(query)
         if match:
             result = await self.get_track_via_url(match, market=market, cls=cls, **kwargs)
