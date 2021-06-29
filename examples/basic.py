@@ -50,7 +50,11 @@ async def play(ctx: commands.Context, *, song: str):
         return await ctx.send('No songs were found.')
 
     await player.play(track)
-    await ctx.send(f'Now playing: {track.title}')
+    
+    if isinstance(track, obsidian.Track):
+        await ctx.send(f'Now playing: {track.title}')
+    elif isinstance(track, obsidian.Playlist):
+        await ctx.send(f'Now playing: {track.name}')
 
 
 @bot.command(aliases=['disconnect'])
