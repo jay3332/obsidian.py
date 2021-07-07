@@ -378,7 +378,6 @@ class Player(NodeListenerMixin):
         """
 
         await self.disconnect(force=force)
-        del self.node._players[self.guild_id]
 
         __log__.info(f'PLAYER | {self.guild_id} has been destroyed.')
 
