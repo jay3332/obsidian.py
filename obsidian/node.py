@@ -569,7 +569,7 @@ class Node(BaseNode, NodeListenerMixin):
         except AttributeError:
             pass
                 
-        self.bot.dispatch(event, *args, **kwargs)
+        #self.bot.dispatch(event, *args, **kwargs)
 
     async def handle_ws_response(self, op: OpCode, data: dict) -> None:
         if op is OpCode.STATS:
