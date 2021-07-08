@@ -562,13 +562,13 @@ class Node(BaseNode, NodeListenerMixin):
 
     def dispatch(self, event: str, *args, **kwargs) -> None:
         # Temporary solution that made in a PR
-        for arg in args:
-            if isinstance(arg, Player):
-                try:
-                    getattr(arg, event)(*args, **kwargs)
-                    return
-                except AttributeError:
-                    pass
+        #for arg in args:
+            #if isinstance(arg, Player):
+                #try:
+                    #getattr(arg, event)(*args, **kwargs)
+                    #return
+                #except AttributeError:
+                    #pass
                 
         self.bot.dispatch(event, *args, **kwargs)
 
