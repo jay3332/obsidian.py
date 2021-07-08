@@ -295,20 +295,20 @@ class Player(NodeListenerMixin):
 
     def dispatch_event(self, data: Dict[str, Any]) -> None:
         try:
-            t = data['t']
+            event_name = data['t']
         except KeyError:
             try:
-                t = data['type']
+                event_name = data['type']
             except KeyError:
                 __log__.error(f'PLAYER | {self.guild_id!r} received unknown event type: {data}')
                 return
         
-        t = get_cls(t)
+        t = get_cls(event_name)
 
         event = t(data)
 
         __log__.info(f'PLAYER | {self.guild_id!r} dispatching {event.type!r}: {data}')
-        self.node.dispatch_event(f'obsidian_{event.type.value.lower()}', self, event)
+        self.node.dispatch_event(f'obsidian_{event.type.value.lower()}', self, event_name, event)
 
     async def dispatch_voice_update(self) -> None:
         if not self._session_id or not self._voice_server_update_data:
