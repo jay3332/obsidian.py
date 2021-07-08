@@ -294,13 +294,17 @@ class Player(NodeListenerMixin):
         self._paused = current_track.get('paused', False)
 
     def dispatch_event(self, data: Dict[str, Any]) -> None:
+        #print(data)
         try:
             t = data['t']
         except KeyError:
-            __log__.error(f'PLAYER | {self.guild_id!r} received unknown event type: {data}')
-            return
-        else:
-            t = get_cls(t)
+            try:
+                t = data['type']
+            except KeyError:
+                __log__.error(f'PLAYER | {self.guild_id!r} received unknown event type: {data}')
+                return
+        
+        t = get_cls(t)
 
         event = t(data)
 
