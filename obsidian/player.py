@@ -294,7 +294,6 @@ class Player(NodeListenerMixin):
         self._paused = current_track.get('paused', False)
 
     def dispatch_event(self, data: Dict[str, Any]) -> None:
-        #print(data)
         try:
             t = data['t']
         except KeyError:
