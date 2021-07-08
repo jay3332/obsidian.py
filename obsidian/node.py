@@ -561,9 +561,18 @@ class Node(BaseNode, NodeListenerMixin):
         return self  # Relavant for NodeListenerMixin
 
     def dispatch(self, event: str, *args, **kwargs) -> None:
+        # Temporary solution that made in a PR
+        for arg in args:
+            if isinstance(arg, Player):
+                try:
+                    getattr(arg, event)(*args, **kwargs)
+                    return
+                except AttributeError:
+                    pass
+                
         self.bot.dispatch(event, *args, **kwargs)
 
-    def handle_ws_response(self, op: OpCode, data: dict) -> None:
+    async def handle_ws_response(self, op: OpCode, data: dict) -> None:
         if op is OpCode.STATS:
             self.__stats = Stats(data)
             return
