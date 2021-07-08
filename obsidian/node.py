@@ -234,9 +234,9 @@ class BaseNode(object):
     def dispatch(self, event: str, *args, **kwargs) -> None:
         raise NotImplementedError
 
-    def dispatch_event(self, event: str, *args, **kwargs) -> None:
+    def dispatch_event(self, player, event: str, *args, **kwargs) -> None:
         self.loop.create_task(
-            discord.utils.maybe_coroutine(self.dispatch, event, *args, **kwargs)
+            discord.utils.maybe_coroutine(self.dispatch, player, event, *args, **kwargs)
         )
 
         for listener in self.__listeners__.get(event, []):
@@ -560,17 +560,16 @@ class Node(BaseNode, NodeListenerMixin):
     def node(self):
         return self  # Relavant for NodeListenerMixin
 
-    def dispatch(self, event: str, *args, **kwargs) -> None:
+    def dispatch(self, player, event: str, *args, **kwargs) -> None:
         # Temporary solution that made in a PR
-        for arg in args:
-            if isinstance(arg, Player):
-                try:
-                    getattr(arg, event)(*args, **kwargs)
-                    return
-                except AttributeError:
-                    pass
+        try:
+            x = getattr(player, event)(player, event, *args, **kwargs)
+            if x:
+                return
+        except AttributeError:
+            pass
                 
-        self.bot.dispatch(event, *args, **kwargs)
+        #self.bot.dispatch(event, *args, **kwargs)
 
     async def handle_ws_response(self, op: OpCode, data: dict) -> None:
         if op is OpCode.STATS:
