@@ -563,8 +563,9 @@ class Node(BaseNode, NodeListenerMixin):
     def dispatch(self, player, event: str, *args, **kwargs) -> None:
         # Temporary solution that made in a PR
         try:
-            getattr(player, event)(player, event, *args, **kwargs)
-            return
+            x = getattr(player, event)(player, event, *args, **kwargs)
+            if x:
+                return
         except AttributeError:
             pass
                 
