@@ -563,7 +563,7 @@ class Node(BaseNode, NodeListenerMixin):
     def dispatch(self, event: str, *args, **kwargs) -> None:
         self.bot.dispatch(event, *args, **kwargs)
 
-    def handle_ws_response(self, op: OpCode, data: dict) -> None:
+    async def handle_ws_response(self, op: OpCode, data: dict) -> None:
         if op is OpCode.STATS:
             self.__stats = Stats(data)
             return
