@@ -115,14 +115,14 @@ class Track:
     @property
     def length(self) -> int:
         """
-        int: The duration of the track in milliseconds.
+        int: The duration of the track in seconds.
         """
         return self._length
 
     @property
     def position(self) -> int:
         """
-        int: The current position of the track in milliseconds.
+        int: The current position of the track in seconds.
         """
         return self._position
 

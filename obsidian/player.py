@@ -297,13 +297,10 @@ class Player(NodeListenerMixin):
         try:
             t = data['t']
         except KeyError:
-            try:
-                t = data['type']
-            except KeyError:
-                __log__.error(f'PLAYER | {self.guild_id!r} received unknown event type: {data}')
-                return
-        
-        t = get_cls(t)
+            __log__.error(f'PLAYER | {self.guild_id!r} received unknown event type: {data}')
+            return
+        else:
+            t = get_cls(t)
 
         event = t(data)
 
@@ -381,6 +378,7 @@ class Player(NodeListenerMixin):
         """
 
         await self.disconnect(force=force)
+        del self.node._players[self.guild_id]
 
         __log__.info(f'PLAYER | {self.guild_id} has been destroyed.')
 
