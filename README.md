@@ -23,7 +23,7 @@ A fully object-oriented wrapper around [Obsidian v2](https://github.com/mixtape-
 This wrapper is based off of [Slate](https://github.com/Axelancerr/Slate).
 
 ## Requirements
-### Python (3.7+)
+### Python (3.8+)
 - [discord.py](https://pypi.org/project/discord.py/)
 - [aiohttp](https://pypi.org/project/aiohttp/)
 ### Obsidian (v2)
