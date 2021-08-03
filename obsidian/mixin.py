@@ -78,7 +78,7 @@ class NodeListenerMixin:
                         return False
 
                 for name, listener in inspect.getmembers(cls, predicate):
-                    name = name.removeprefix('on_')
+                    name = removeprefix(name, 'on_')
                     if name not in node.__listeners__:
                         node.__listeners__[name] = [listener]
                         return
