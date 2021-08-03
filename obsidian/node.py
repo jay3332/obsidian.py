@@ -561,8 +561,9 @@ class Node(BaseNode, NodeListenerMixin):
     def node(self):
         return self  # Relavant for NodeListenerMixin
 
-    def dispatch(self, player, raw_event: str, event, *args, **kwargs) -> None:
+    def dispatch(self, player, raw_event: str, event: str = "", *args, **kwargs) -> None:
         # Temporary solution that made in a PR
+        event = event or raw_event
         try:
             x = getattr(player, event)(player, event, *args, **kwargs)
             if x:
