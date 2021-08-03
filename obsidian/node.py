@@ -564,6 +564,8 @@ class Node(BaseNode, NodeListenerMixin):
     def dispatch(self, player, raw_event: str, event: str = "", *args, **kwargs) -> None:
         # Temporary solution that made in a PR
         event = event or raw_event
+        if not isinstance(event, str):
+            event = ""
         try:
             x = getattr(player, event)(player, event, *args, **kwargs)
             if x:
