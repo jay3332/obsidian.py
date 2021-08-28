@@ -22,6 +22,10 @@
 A fully object-oriented wrapper around [Obsidian v2](https://github.com/mixtape-bot/obsidian/tree/v2) designed for [discord.py](https://github.com/Rapptz/discord.py/).  
 This wrapper is based off of [Slate](https://github.com/Axelancerr/Slate).
 
+## This project has reached it's EOL.
+This project was archived on the 28th of August, 2021. The library has been fundametally broken for the past few months and I have no plans to fix it.
+Consider using [Slate](https://github.com/Axelancerr/Slate) or [wavelink](https://github.com/PythonistaGuild/Wavelink/) for replacements. 
+
 ## Requirements
 ### Python (3.8+)
 - [discord.py](https://pypi.org/project/discord.py/)
