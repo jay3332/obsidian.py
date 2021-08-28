@@ -234,7 +234,8 @@ class BaseNode(object):
     def dispatch(self, event: str, *args, **kwargs) -> None:
         raise NotImplementedError
 
-    def dispatch_event(self, player, raw_event: str, event, *args, **kwargs) -> None:
+    def dispatch_event(self, player, raw_event: str, event: str = "", *args, **kwargs) -> None:
+        event = event or raw_event
         self.loop.create_task(
             discord.utils.maybe_coroutine(self.dispatch, player, raw_event, event, *args, **kwargs)
         )
@@ -560,8 +561,11 @@ class Node(BaseNode, NodeListenerMixin):
     def node(self):
         return self  # Relavant for NodeListenerMixin
 
-    def dispatch(self, player, raw_event: str, event, *args, **kwargs) -> None:
+    def dispatch(self, player, raw_event: str, event: str = "", *args, **kwargs) -> None:
         # Temporary solution that made in a PR
+        event = event or raw_event
+        if not isinstance(event, str):
+            event = ""
         try:
             x = getattr(player, event)(player, event, *args, **kwargs)
             if x:
